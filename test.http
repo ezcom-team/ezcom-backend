@@ -1,0 +1,28 @@
+### Create Product
+POST http://localhost:8080/products
+Content-Type: application/json
+
+{
+  "name": "Product A",
+  "price": 100.50,
+  "quantity": 10
+}
+
+### Get All Products
+GET http://localhost:8080/products
+
+### Get Product by ID (Replace `{product_id}` with a valid product ID)
+GET http://localhost:8080/products/{64ced6e8ebf11ba9f0db39e4}
+
+### Update Product by ID (Replace `{product_id}` with a valid product ID)
+PUT http://localhost:8080/products/{product_id}
+Content-Type: application/json
+
+{
+  "name": "Updated Product",
+  "price": 150.25,
+  "quantity": 20
+}
+
+### Delete Product by ID (Replace `{product_id}` with a valid product ID)
+DELETE http://localhost:8080/products/{product_id}
