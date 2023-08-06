@@ -22,7 +22,7 @@ func Connect() {
 	clientOptions := options.Client().ApplyURI("mongodb+srv://ezcom-dev:1234ezcom@cluster0.xenfcls.mongodb.net/?retryWrites=true&w=majority")
 
 	// Connect to MongoDB
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 100*time.Second)
 	defer cancel()
 	client, err := mongo.Connect(ctx, clientOptions)
 	if err != nil {

@@ -42,9 +42,11 @@ func GetProducts(c *gin.Context) {
 	collection := db.GetCollection()
 
 	// Find all products in the collection
+
+	// "Failed to retrieve products"
 	cursor, err := collection.Find(ctx, bson.M{})
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve products"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
 		return
 	}
 	defer cursor.Close(ctx)

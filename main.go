@@ -18,7 +18,7 @@ func main() {
 	routes.Setup(router)
 
 	// Start the server
-	err := router.Run(":3000")
+	err := router.Run()
 	if err != nil {
 		log.Fatal("Failed to start the server: ", err)
 	}

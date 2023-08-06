@@ -1,9 +1,11 @@
+### Test
+
 ### Create Product
 POST http://localhost:8080/products
 Content-Type: application/json
 
 {
-  "name": "Product A",
+  "name": "Product D",
   "price": 100.50,
   "quantity": 10
 }
@@ -12,7 +14,7 @@ Content-Type: application/json
 GET http://localhost:8080/products
 
 ### Get Product by ID (Replace `{product_id}` with a valid product ID)
-GET http://localhost:8080/products/{64ced6e8ebf11ba9f0db39e4}
+GET http://localhost:8080/products/64ced82fd90ece5d0904ac3d
 
 ### Update Product by ID (Replace `{product_id}` with a valid product ID)
 PUT http://localhost:8080/products/{product_id}
@@ -25,4 +27,4 @@ Content-Type: application/json
 }
 
 ### Delete Product by ID (Replace `{product_id}` with a valid product ID)
-DELETE http://localhost:8080/products/{product_id}
+DELETE http://localhost:8080/products/64cedb39cb066a6a11c6aed9
