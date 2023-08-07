@@ -5,7 +5,8 @@ POST http://localhost:8080/products
 Content-Type: application/json
 
 {
-  "name": "Product B",
+  "name": "Product Test",
+  "desc": "the best product in the world!",
   "price": 100.50,
   "quantity": 10
 }
@@ -28,3 +29,15 @@ Content-Type: application/json
 
 ### Delete Product by ID (Replace `{product_id}` with a valid product ID)
 DELETE http://localhost:8080/products/64cedb39cb066a6a11c6aed9
+
+
+### Create Product
+POST http://localhost:8080/user
+Content-Type: application/json
+
+{
+  "name": "sumet",
+  "role": "admin"
+}
+###
+GET  http://localhost:8080/users/64d166c8aae90269e03ddc4d

@@ -17,4 +17,9 @@ func Setup(router *gin.Engine) {
 		productGroup.PUT("/:id", handlers.UpdateProduct)
 		productGroup.DELETE("/:id", handlers.DeleteProduct)
 	}
+	userGroup := router.Group("/users")
+	{
+		userGroup.POST("", handlers.CreateMember)
+		userGroup.GET("/:id", handlers.GetUser)
+	}
 }

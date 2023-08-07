@@ -24,7 +24,7 @@ func CreateProduct(c *gin.Context) {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	var collection = db.GetCollection()
+	var collection = db.GetProcuct_Collection()
 	result, err := collection.InsertOne(ctx, product)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create product"})
@@ -39,7 +39,7 @@ func GetProducts(c *gin.Context) {
 	defer cancel()
 
 	// Get the MongoDB collection
-	collection := db.GetCollection()
+	collection := db.GetProcuct_Collection()
 
 	// Find all products in the collection
 
@@ -84,7 +84,7 @@ func GetProductByID(c *gin.Context) {
 	}
 
 	var product models.Product
-	var collection = db.GetCollection()
+	var collection = db.GetProcuct_Collection()
 	err = collection.FindOne(ctx, bson.M{"_id": objID}).Decode(&product)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
@@ -124,7 +124,7 @@ func UpdateProduct(c *gin.Context) {
 			"quantity": product.Quantity,
 		},
 	}
-	var collection = db.GetCollection()
+	var collection = db.GetProcuct_Collection()
 	_, err = collection.UpdateOne(ctx, bson.M{"_id": objID}, update)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update product"})
@@ -147,7 +147,7 @@ func DeleteProduct(c *gin.Context) {
 		return
 	}
 
-	var collection = db.GetCollection()
+	var collection = db.GetProcuct_Collection()
 	_, err = collection.DeleteOne(ctx, bson.M{"_id": objID})
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete product"})
