@@ -1,11 +1,11 @@
-### Test
+### Test 123
 
 ### Create Product
 POST http://localhost:8080/products
 Content-Type: application/json
 
 {
-  "name": "Product D",
+  "name": "Product B",
   "price": 100.50,
   "quantity": 10
 }
