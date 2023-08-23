@@ -1,5 +1,3 @@
-### Test 123
-
 ### Create Product
 POST http://localhost:8080/products
 Content-Type: application/json
@@ -30,14 +28,25 @@ Content-Type: application/json
 ### Delete Product by ID (Replace `{product_id}` with a valid product ID)
 DELETE http://localhost:8080/products/64cedb39cb066a6a11c6aed9
 
-
-### Create Product
-POST http://localhost:8080/user
+### Create User
+POST http://localhost:8080/auth/register
 Content-Type: application/json
 
 {
   "name": "sumet",
+  "email": "test",
+  "password": "1234",
   "role": "admin"
 }
-###
-GET  http://localhost:8080/users/64d166c8aae90269e03ddc4d
+
+### Login
+POST   http://localhost:8080/auth/login
+Content-Type: application/json
+
+{
+  "email": "test",
+  "password": "1234"
+}
+
+### Validate
+GET http://localhost:8080/auth/validate

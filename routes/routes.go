@@ -3,6 +3,7 @@ package routes
 
 import (
 	"ezcom/handlers"
+	"ezcom/middleware"
 
 	"github.com/gin-gonic/gin"
 )
@@ -21,5 +22,11 @@ func Setup(router *gin.Engine) {
 	{
 		userGroup.POST("", handlers.CreateMember)
 		userGroup.GET("/:id", handlers.GetUser)
+	}
+	authGroup := router.Group("/auth")
+	{
+		authGroup.POST("/register", handlers.Singup)
+		authGroup.POST("/login", handlers.Login)
+		authGroup.GET("/validate", middleware.RequireAuth, handlers.Validate)
 	}
 }
