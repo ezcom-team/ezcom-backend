@@ -5,6 +5,7 @@ import (
 	"ezcom/db"
 	"ezcom/routes"
 	"log"
+	"os"
 
 	"github.com/gin-gonic/gin"
 )
@@ -22,8 +23,18 @@ func main() {
 	routes.Setup(router)
 
 	// Start the server
-	err := router.Run(":9090")
+	var port = envPortOr("3000")
+	err := router.Run(port)
 	if err != nil {
 		log.Fatal("Failed to start the server: ", err)
 	}
+}
+
+func envPortOr(port string) string {
+	// If `PORT` variable in environment exists, return it
+	if envPort := os.Getenv("PORT"); envPort != "" {
+		return ":" + envPort
+	}
+	// Otherwise, return the value of `port` variable from function argument
+	return ":" + port
 }
