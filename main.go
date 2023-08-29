@@ -13,6 +13,10 @@ func main() {
 	// Connect to MongoDB
 	db.Connect()
 
+	if err := db.InitFirebaseApp(); err != nil {
+		panic("Failed to initialize Firebase: " + err.Error())
+	}
+
 	// Set up Gin router
 	router := gin.Default()
 	routes.Setup(router)

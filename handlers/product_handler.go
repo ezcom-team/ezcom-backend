@@ -5,6 +5,7 @@ import (
 	"context"
 	"ezcom/db"
 	"ezcom/models"
+	"io"
 	"net/http"
 	"time"
 
@@ -13,6 +14,55 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
+
+func UploadImage(c *gin.Context) {
+	var product models.Product
+	file, err := c.FormFile("file")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "File not found",
+		})
+		return
+	}
+	imagePath := file.Filename
+
+	bucket := "ezcom-eaa21.appspot.com"
+
+	wc := db.Storage.Bucket(bucket).Object(imagePath).NewWriter(context.Background())
+	src, err := file.Open()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	defer src.Close()
+
+	_, err = io.Copy(wc, src)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	if err := wc.Close(); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Failed to close the file writer",
+		})
+		return
+	}
+
+	product.File = "https://firebasestorage.googleapis.com/v0/b/ezcom-eaa21.appspot.com/o/" + imagePath + "?alt=media"
+
+	var collection = db.GetProcuct_Collection()
+	result, err := collection.InsertOne(context.Background(), product)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create product"})
+		return
+	}
+	c.JSON(http.StatusCreated, result.InsertedID)
+}
 
 // CreateProduct handles the creation of a new product
 func CreateProduct(c *gin.Context) {
@@ -119,9 +169,9 @@ func UpdateProduct(c *gin.Context) {
 
 	update := bson.M{
 		"$set": bson.M{
-			"name":     product.Name,
-			"price":    product.Price,
-			"quantity": product.Quantity,
+			"name":  product.Name,
+			"price": product.Price,
+			"file":  product.File,
 		},
 	}
 	var collection = db.GetProcuct_Collection()

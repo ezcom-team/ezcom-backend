@@ -12,7 +12,7 @@ import (
 func Setup(router *gin.Engine) {
 	productGroup := router.Group("/products")
 	{
-		productGroup.POST("", handlers.CreateProduct)
+		productGroup.POST("", handlers.UploadImage)
 		productGroup.GET("/:id", handlers.GetProductByID)
 		productGroup.GET("/", handlers.GetProducts)
 		productGroup.PUT("/:id", handlers.UpdateProduct)
