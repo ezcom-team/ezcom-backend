@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -20,6 +21,12 @@ func main() {
 
 	// Set up Gin router
 	router := gin.Default()
+
+	// Set up CORS middleware
+	config := cors.DefaultConfig()
+	config.AllowOrigins = []string{"http://localhost:3000"} // แก้ไข URL ของโดเมน React ของคุณตรงนี้
+	router.Use(cors.New(config))
+
 	routes.Setup(router)
 
 	// Start the server
