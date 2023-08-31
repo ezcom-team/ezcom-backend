@@ -24,7 +24,7 @@ func main() {
 
 	// Set up CORS middleware
 	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{"http://localhost:5173"} // แก้ไข URL ของโดเมน React ของคุณตรงนี้
+	config.AllowOrigins = []string{"http://localhost:5173", "http://127.0.0.1:5173"} // แก้ไข URL ของโดเมน React ของคุณตรงนี้
 	router.Use(cors.New(config))
 
 	routes.Setup(router)
