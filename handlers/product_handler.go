@@ -7,6 +7,7 @@ import (
 	"ezcom/models"
 	"io"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -17,7 +18,23 @@ import (
 
 func UploadImage(c *gin.Context) {
 	var product models.Product
-	file, err := c.FormFile("file")
+	product.Name = c.PostForm("name")
+	product.Type = c.PostForm("type")
+	product.Desc = c.PostForm("desc")
+	priceStr := c.PostForm("price")
+	priceFloat, err := strconv.ParseFloat(priceStr, 64)
+	if err != nil {
+		// Handle the error, possibly return an error response
+	}
+	product.Price = priceFloat
+	quantityStr := c.PostForm("quantity")
+	quantityInt, err := strconv.ParseInt(quantityStr, 10, 64)
+	if err != nil {
+		// Handle the error, possibly return an error response
+	}
+	product.Quantity = int64(quantityInt)
+	// store file
+	file, err := c.FormFile("image")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "File not found",
@@ -53,7 +70,7 @@ func UploadImage(c *gin.Context) {
 		return
 	}
 
-	product.File = "https://firebasestorage.googleapis.com/v0/b/ezcom-eaa21.appspot.com/o/" + imagePath + "?alt=media"
+	product.Image = "https://firebasestorage.googleapis.com/v0/b/ezcom-eaa21.appspot.com/o/" + imagePath + "?alt=media"
 
 	var collection = db.GetProcuct_Collection()
 	result, err := collection.InsertOne(context.Background(), product)
@@ -171,7 +188,7 @@ func UpdateProduct(c *gin.Context) {
 		"$set": bson.M{
 			"name":  product.Name,
 			"price": product.Price,
-			"file":  product.File,
+			"file":  product.Image,
 		},
 	}
 	var collection = db.GetProcuct_Collection()
