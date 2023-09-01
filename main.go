@@ -30,7 +30,7 @@ func main() {
 	routes.Setup(router)
 
 	// Start the server
-	var port = envPortOr("3000")
+	var port = envPortOr("8080")
 	err := router.Run(port)
 	if err != nil {
 		log.Fatal("Failed to start the server: ", err)
