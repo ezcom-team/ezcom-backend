@@ -21,12 +21,12 @@ func RequireAuth(c *gin.Context) {
 	defer cancel()
 	// Get the cookie off req
 	// tokenString, err := c.Cookie("Authorization")
-	tokenString := c.GetHeader("Authorization")
+	tokenString, err := c.Cookie("Authorization")
 
-	// if err != nil {
-	// 	c.AbortWithStatus(http.StatusUnauthorized)
-	// 	c.JSON(http.StatusUnauthorized, gin.H{"error": "tokenString"})
-	// }
+	if err != nil {
+		c.AbortWithStatus(http.StatusUnauthorized)
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "tokenString"})
+	}
 	// Decode/validate it
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		// Don't forget to validate the alg is what you expect:
