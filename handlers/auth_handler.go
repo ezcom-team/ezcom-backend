@@ -91,7 +91,7 @@ func Login(c *gin.Context) {
 	}
 	// // set in token
 	// c.SetSameSite(http.SameSiteNoneMode)
-	c.SetCookie("Authorization", tokenString, 3600*24*30, "", "", false, false)
+	c.SetCookie("Authorization", tokenString, 3600*24*30, "", "", true, false)
 	// return response
 	c.JSON(http.StatusOK, gin.H{"token": tokenString})
 }
