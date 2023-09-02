@@ -26,7 +26,7 @@ func main() {
 	config := cors.DefaultConfig()
 	config.AllowOrigins = []string{"http://localhost:5173", "http://127.0.0.1:5173"} // แก้ไข URL ของโดเมน React ของคุณตรงนี้
 	config.AllowHeaders = []string{"Authorization", "Content-Type"}                  // เพิ่ม Request header ที่อนุญาตใน Preflight Response
-	// config.AllowCredentials = true
+	config.AllowCredentials = true
 
 	router.Use(cors.New(config))
 
