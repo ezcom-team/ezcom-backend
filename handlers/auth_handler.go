@@ -93,7 +93,8 @@ func Login(c *gin.Context) {
 	c.SetSameSite(http.SameSiteNoneMode)
 	c.SetCookie("Authorization", tokenString, 20, "/", "", true, true)
 	// return response
-	c.JSON(http.StatusOK, gin.H{"token": tokenString})
+	// c.JSON(http.StatusOK, gin.H{"token": tokenString})
+	c.JSON(http.StatusOK, gin.H{"user": found})
 }
 
 func Validate(c *gin.Context) {
