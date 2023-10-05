@@ -11,8 +11,8 @@ import (
 
 // Setup initializes the routes and handlers
 func Setup(router *gin.Engine) {
-	router.GET("/test", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{"Text": "Hello"})
+	router.GET("", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{"Text": "Hello welcome to ezcom backend"})
 	})
 	productGroup := router.Group("/products")
 	{
@@ -32,5 +32,10 @@ func Setup(router *gin.Engine) {
 		authGroup.POST("/register", handlers.Singup)
 		authGroup.POST("/login", handlers.Login)
 		authGroup.GET("/validate", middleware.RequireAuth, handlers.Validate)
+	}
+	sellorderGroup := router.Group("/sellOrder")
+	{
+		sellorderGroup.POST("", middleware.RequireAuth, handlers.CreateSellOrder)
+		sellorderGroup.GET("", middleware.RequireAuth, handlers.GetSellOrdersByUID)
 	}
 }

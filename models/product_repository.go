@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func GetAllProducts() ([]Product, error) {
@@ -39,4 +40,35 @@ func GetAllProducts() ([]Product, error) {
 	}
 
 	return products, nil
+}
+
+func GetProduct(objID primitive.ObjectID) (Product, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	var product Product
+	var collection = db.GetProcuct_Collection()
+	err := collection.FindOne(ctx, bson.M{"_id": objID}).Decode(&product)
+	if err != nil {
+		return Product{}, err
+	}
+	return product, nil
+
+}
+
+func UpdateProductQuantity(objID primitive.ObjectID, quantity int64, price float64) error {
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	update := bson.M{
+		"$set": bson.M{
+			"quantity": quantity,
+			"price":    price,
+		},
+	}
+	var collection = db.GetProcuct_Collection()
+	_, err := collection.UpdateOne(ctx, bson.M{"_id": objID}, update)
+	if err != nil {
+		return err
+	}
+	return nil
 }
