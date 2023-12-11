@@ -16,16 +16,11 @@ func Setup(router *gin.Engine) {
 	})
 	productGroup := router.Group("/products")
 	{
-		productGroup.POST("", handlers.UploadImage)
+		productGroup.POST("", handlers.CreateProduct)
 		productGroup.GET("/:id", handlers.GetProductByID)
 		productGroup.GET("/", handlers.GetProducts)
 		productGroup.PUT("/:id", handlers.UpdateProduct)
 		productGroup.DELETE("/:id", handlers.DeleteProduct)
-	}
-	userGroup := router.Group("/users")
-	{
-		userGroup.POST("", handlers.CreateMember)
-		userGroup.GET("/:id", handlers.GetUser)
 	}
 	authGroup := router.Group("/auth")
 	{
@@ -37,5 +32,11 @@ func Setup(router *gin.Engine) {
 	{
 		sellorderGroup.POST("", middleware.RequireAuth, handlers.CreateSellOrder)
 		sellorderGroup.GET("", middleware.RequireAuth, handlers.GetSellOrdersByUID)
+	}
+	specsGroup := router.Group("/specs")
+	{
+		specsGroup.GET("/mouse",middleware.RequireAuth,)
+		specsGroup.GET("/mousepad",middleware.RequireAuth,)
+		specsGroup.GET("/cpu",middleware.RequireAuth,)
 	}
 }

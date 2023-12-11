@@ -4,6 +4,7 @@ import (
 	"context"
 	"ezcom/db"
 	"ezcom/models"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -26,18 +27,63 @@ func Singup(c *gin.Context) {
 	defer cancel()
 	// bind request.body with user
 	var user models.User
-	if err := c.BindJSON(&user); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to read body"})
-		return
-	}
+
+	user.Name = c.PostForm("name")
+	user.Email = c.PostForm("email")
+	user.Password = c.PostForm("password")
+	user.Role = c.PostForm("role")
+	// if err := c.BindJSON(&user); err != nil {
+	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to read body"})
+	// 	return
+	// }
 	// hash password
 	hash, err := bcrypt.GenerateFromPassword([]byte(user.Password), 10)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to hash password"})
 		return
 	}
-	// create the user
 	user.Password = string(hash)
+
+	// store file
+	file, err := c.FormFile("file")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "File not found",
+		})
+		return
+	}
+	imagePath := file.Filename
+
+	bucket := "ezcom-eaa21.appspot.com"
+
+	wc := db.Storage.Bucket(bucket).Object(imagePath).NewWriter(context.Background())
+	src, err := file.Open()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	defer src.Close()
+
+	_, err = io.Copy(wc, src)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	if err := wc.Close(); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Failed to close the file writer",
+		})
+		return
+	}
+
+	user.File = "https://firebasestorage.googleapis.com/v0/b/ezcom-eaa21.appspot.com/o/" + imagePath + "?alt=media"
+
+	// create the user
 	collection := db.GetUser_Collection()
 	result, err := collection.InsertOne(ctx, user)
 	if err != nil {

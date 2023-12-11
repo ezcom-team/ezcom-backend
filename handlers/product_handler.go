@@ -16,11 +16,21 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func UploadImage(c *gin.Context) {
+type createProductDTO struct {
+	Name  string
+	Desc  string
+	Image string
+	Type  string
+	Color []string
+	Specs string
+}
+
+func CreateProduct(c *gin.Context) {
 	var product models.Product
 	product.Name = c.PostForm("name")
 	product.Type = c.PostForm("type")
 	product.Desc = c.PostForm("desc")
+	product.Color = c.PostFormArray("color")
 	priceStr := c.PostForm("price")
 	priceFloat, err := strconv.ParseFloat(priceStr, 64)
 	if err != nil {
@@ -71,33 +81,36 @@ func UploadImage(c *gin.Context) {
 	}
 
 	product.Image = "https://firebasestorage.googleapis.com/v0/b/ezcom-eaa21.appspot.com/o/" + imagePath + "?alt=media"
+	// check and set specs
 
+	var specs models.MouseSpecs
+	if product.Type == "mouse" {
+		specs.Sensor = c.PostForm("sensor")
+		specs.ButtonSwitch = c.PostForm("buttonSwitch")
+		specs.Connection = c.PostForm("connection")
+		specs.Length = c.PostForm("length")
+		specs.Weight = c.PostForm("weight")
+		specs.PollingRate = c.PostForm("pollingRate")
+		specs.ButtonForce = c.PostForm("buttonForce")
+		specs.Shape = c.PostForm("shape")
+		specs.Height = c.PostForm("height")
+		specs.Width = c.PostForm("width")
+	}
+	// store product in database
+	var specsCollection = db.GetSpecs_Collection()
+	specsResult, err := specsCollection.InsertOne(context.Background(), specs)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create specs"})
+		return
+	}
+	product.Specs = specsResult.InsertedID.(primitive.ObjectID).Hex()
+	c.JSON(http.StatusCreated, specsResult.InsertedID)
 	var collection = db.GetProcuct_Collection()
 	result, err := collection.InsertOne(context.Background(), product)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create product"})
 		return
 	}
-	c.JSON(http.StatusCreated, result.InsertedID)
-}
-
-// CreateProduct handles the creation of a new product
-func CreateProduct(c *gin.Context) {
-	var product models.Product
-	if err := c.BindJSON(&product); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
-		return
-	}
-
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-	var collection = db.GetProcuct_Collection()
-	result, err := collection.InsertOne(ctx, product)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create product"})
-		return
-	}
-
 	c.JSON(http.StatusCreated, result.InsertedID)
 }
 

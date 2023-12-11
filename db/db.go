@@ -16,6 +16,7 @@ var (
 	product_collection   *mongo.Collection
 	user_collection      *mongo.Collection
 	sellOrder_collection *mongo.Collection
+	specs_collection     *mongo.Collection
 )
 
 // Connect initializes the MongoDB connection
@@ -45,6 +46,7 @@ func Connect() {
 	product_collection = database.Collection("products")
 	user_collection = database.Collection("user")
 	sellOrder_collection = database.Collection("sellOrder")
+	specs_collection = database.Collection("specs")
 
 	log.Println("Connected to MongoDB!")
 }
@@ -63,4 +65,8 @@ func GetUser_Collection() *mongo.Collection {
 
 func GetSellOrder_Collection() *mongo.Collection {
 	return sellOrder_collection
+}
+
+func GetSpecs_Collection() *mongo.Collection {
+	return specs_collection
 }

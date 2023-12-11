@@ -12,4 +12,6 @@ type Product struct {
 	Image    string             `bson:"image"`
 	Quantity int64              `bson:"quantity"`
 	Type     string             `bson:"type"`
+	Color    []string           `bson:"color"`
+	Specs    string             `bson:"specs"`
 }
