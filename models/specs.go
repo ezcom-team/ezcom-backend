@@ -1,6 +1,7 @@
 package models
 
 type MouseSpecs struct {
+	SpecsID      string `bson:"specId"`
 	ProductID    string `bson:"productId"`
 	Sensor       string `bson:"sensor"`
 	ButtonSwitch string `bson:"buttonSwitch"`

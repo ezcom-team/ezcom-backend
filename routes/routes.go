@@ -17,8 +17,9 @@ func Setup(router *gin.Engine) {
 	productGroup := router.Group("/products")
 	{
 		productGroup.POST("", handlers.CreateProduct)
-		productGroup.GET("/:id", handlers.GetProductByID)
 		productGroup.GET("/", handlers.GetProducts)
+		productGroup.GET("/:id", handlers.GetProductByID)
+		productGroup.GET("/spec/:id", handlers.GetSpecByID)
 		productGroup.PUT("/:id", handlers.UpdateProduct)
 		productGroup.DELETE("/:id", handlers.DeleteProduct)
 	}
@@ -35,8 +36,8 @@ func Setup(router *gin.Engine) {
 	}
 	specsGroup := router.Group("/specs")
 	{
-		specsGroup.GET("/mouse",middleware.RequireAuth,)
-		specsGroup.GET("/mousepad",middleware.RequireAuth,)
-		specsGroup.GET("/cpu",middleware.RequireAuth,)
+		specsGroup.GET("/mouse", middleware.RequireAuth)
+		specsGroup.GET("/mousepad", middleware.RequireAuth)
+		specsGroup.GET("/cpu", middleware.RequireAuth)
 	}
 }
