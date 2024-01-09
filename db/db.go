@@ -16,6 +16,8 @@ var (
 	product_collection   *mongo.Collection
 	user_collection      *mongo.Collection
 	sellOrder_collection *mongo.Collection
+	buyOrder_collection *mongo.Collection
+	matchOrder_collection *mongo.Collection
 	specs_collection     *mongo.Collection
 )
 
@@ -46,6 +48,8 @@ func Connect() {
 	product_collection = database.Collection("products")
 	user_collection = database.Collection("user")
 	sellOrder_collection = database.Collection("sellOrder")
+	buyOrder_collection = database.Collection("buyOrder")
+	matchOrder_collection = database.Collection("matchOrder")
 	specs_collection = database.Collection("specs")
 
 	log.Println("Connected to MongoDB!")
@@ -65,6 +69,13 @@ func GetUser_Collection() *mongo.Collection {
 
 func GetSellOrder_Collection() *mongo.Collection {
 	return sellOrder_collection
+}
+
+func GetBuyOrder_Collection() *mongo.Collection {
+	return buyOrder_collection
+}
+func GetMatchOrder_Collection() *mongo.Collection {
+	return matchOrder_collection
 }
 
 func GetSpecs_Collection() *mongo.Collection {
