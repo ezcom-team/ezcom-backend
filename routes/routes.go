@@ -29,10 +29,14 @@ func Setup(router *gin.Engine) {
 		authGroup.POST("/login", handlers.Login)
 		authGroup.GET("/validate", middleware.RequireAuth, handlers.Validate)
 	}
-	sellorderGroup := router.Group("/sellOrder")
+	orderGroup := router.Group("/order")
 	{
-		sellorderGroup.POST("", middleware.RequireAuth, handlers.CreateSellOrder)
-		sellorderGroup.GET("", middleware.RequireAuth, handlers.GetSellOrdersByUID)
+		orderGroup.POST("/sell", middleware.RequireAuth, handlers.CreateSellOrder)
+		orderGroup.GET("/sell", middleware.RequireAuth, handlers.GetSellOrdersByUID) // ควบรวม
+		orderGroup.GET("/sell", middleware.RequireAuth, handlers.GetSellOrders)      // ควบรวม
+		orderGroup.POST("/buy", middleware.RequireAuth, handlers.CreateBuyOrder)
+		orderGroup.GET("/buy", middleware.RequireAuth, handlers.GetBuyOrdersByUID) // ควบรวม
+		orderGroup.GET("/buy", middleware.RequireAuth, handlers.GetBuyOrders)      // ควบรวม
 	}
 	specsGroup := router.Group("/specs")
 	{

@@ -6,12 +6,12 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-type SellOrder struct {
+type BuyOrder struct {
 	ID         primitive.ObjectID `bson:"_id,omitempty"`
-	Seller_id  string             `bson:"seller_id"`
+	Buyer_id  string             `bson:"buyer_id"`
 	Price      float64            `bson:"price"`
 	Product_id string             `bson:"product_id"`
-	Condition  string             `bson:"condition"`
-	Color      string             `bson:"color"`
+	Condition  []string             `bson:"condition"`
+	Color      []string             `bson:"color"`
 	CreatedAt  time.Time          `bson:"createAt"`
 }
