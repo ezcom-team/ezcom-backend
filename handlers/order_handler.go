@@ -13,6 +13,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 func CreateSellOrder(c *gin.Context) {
@@ -41,8 +42,17 @@ func CreateSellOrder(c *gin.Context) {
 	collection := db.GetBuyOrder_Collection()
 	var buyOrder models.BuyOrder
 	match := true
-	filter := bson.M{"price": bson.M{"%gte": sellOrder.Price}}
-	err := collection.FindOne(context.Background(), filter).Decode(&buyOrder)
+	filter := bson.M{
+		"price":      bson.M{"%gte": sellOrder.Price},
+		"color":      sellOrder.Color,
+		"product_id": sellOrder.Product_id,
+		"condition":  sellOrder.Condition,
+	}
+
+	// กำหนด options เพื่อเรียงลำดับตาม create_at ในลำดับจากน้อยไปมาก
+	options := options.FindOne().SetSort(bson.D{{Key: "createAt", Value: 1}})
+
+	err := collection.FindOne(context.Background(), filter, options).Decode(&buyOrder)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			match = false
@@ -123,8 +133,17 @@ func CreateBuyOrder(c *gin.Context) {
 	collection := db.GetSellOrder_Collection()
 	var sellOrder models.SellOrder
 	match := true
-	filter := bson.M{"price": bson.M{"%lte": buyOrder.Price}}
-	err := collection.FindOne(context.Background(), filter).Decode(&sellOrder)
+	filter := bson.M{
+		"price":      bson.M{"%lte": buyOrder.Price},
+		"color":      buyOrder.Color,
+		"product_id": buyOrder.Product_id,
+		"condition":  buyOrder.Condition,
+	}
+
+	// กำหนด options เพื่อเรียงลำดับตาม create_at ในลำดับจากน้อยไปมาก
+	options := options.FindOne().SetSort(bson.D{{Key: "createAt", Value: 1}})
+
+	err := collection.FindOne(context.Background(), filter, options).Decode(&sellOrder)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			match = false
