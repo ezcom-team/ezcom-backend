@@ -138,6 +138,7 @@ func Login(c *gin.Context) {
 	// // set in token
 	c.SetSameSite(http.SameSiteNoneMode)
 	c.SetCookie("Authorization", tokenString, 100000, "/", "", true, true)
+
 	// return response
 	// c.JSON(http.StatusOK, gin.H{"token": tokenString})
 	c.JSON(http.StatusOK, gin.H{"user": found})
