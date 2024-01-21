@@ -26,6 +26,7 @@ func RequireAuth(c *gin.Context) {
 	if err != nil {
 		c.AbortWithStatus(http.StatusUnauthorized)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "tokenString"})
+		return
 	}
 	// Decode/validate it
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
@@ -38,15 +39,17 @@ func RequireAuth(c *gin.Context) {
 		return []byte(os.Getenv("SECRET")), nil
 	})
 	if err != nil {
-		c.AbortWithStatus(http.StatusUnauthorized)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "token"})
+		c.AbortWithStatus(http.StatusUnauthorized)
+		return
 	}
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 		// Check the exp
 		if float64(time.Now().Unix()) > claims["exp"].(float64) {
-			c.AbortWithStatus(http.StatusUnauthorized)
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "exp"})
+			c.AbortWithStatus(http.StatusUnauthorized)
+			return
 		}
 		// Find the user with token sub
 		var user models.User
@@ -58,16 +61,18 @@ func RequireAuth(c *gin.Context) {
 		}
 		err = collection.FindOne(ctx, bson.M{"_id": objId}).Decode(&user)
 		if err != nil {
-			c.AbortWithStatus(http.StatusUnauthorized)
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "findOne"})
+			c.AbortWithStatus(http.StatusUnauthorized)
+			return
 		}
 		// Attach to req
 		c.Set("user", user)
 		// Continue
 		c.Next()
 	} else {
-		c.AbortWithStatus(http.StatusUnauthorized)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "else"})
+		c.AbortWithStatus(http.StatusUnauthorized)
+		return
 	}
 
 }
