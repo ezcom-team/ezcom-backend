@@ -22,9 +22,11 @@ func RequireAuth(c *gin.Context) {
 	// Get the cookie off req
 	// tokenString, err := c.Cookie("Authorization")
 	tokenString, err := c.Cookie("Authorization")
+	tokenStringFromReq, _ := c.Request.Cookie("Authorization")
 	cookieValue := c.Request.Header
 
 	fmt.Println("tokenString")
+	fmt.Println(tokenStringFromReq)
 	fmt.Println(cookieValue)
 	fmt.Println(err)
 
