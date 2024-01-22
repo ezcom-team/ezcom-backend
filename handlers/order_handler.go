@@ -178,7 +178,7 @@ func CreateBuyOrder(c *gin.Context) {
 		collection = db.GetMatchOrder_Collection()
 		result, err := collection.InsertOne(context.Background(), matchedOrder)
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+			c.JSON(http.StatusInternalServerError, gin.H{"message": "99999"})
 		} else {
 			c.JSON(http.StatusOK, matchedOrder)
 		}
@@ -190,7 +190,7 @@ func CreateBuyOrder(c *gin.Context) {
 		collection = db.GetBuyOrder_Collection()
 		result, err := collection.InsertOne(context.Background(), buyOrder)
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+			c.JSON(http.StatusInternalServerError, gin.H{"message": "000000"})
 		} else {
 			c.JSON(http.StatusOK, buyOrder)
 		}
@@ -208,7 +208,7 @@ func GetSellOrdersByUID(c *gin.Context) {
 	// แปลง user เป็น models.User
 	userObj, ok := user.(models.User)
 	if !ok {
-		c.JSON(http.StatusInternalServerError, gin.H{"message": "Internal Server Error"})
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Internal Server Error 2222"})
 		return
 	}
 	fmt.Print(userObj.ID.Hex())
@@ -219,7 +219,7 @@ func GetSellOrdersByUID(c *gin.Context) {
 	cursor, err := collection.Find(context.TODO(), filter)
 	if err != nil {
 		log.Fatal(err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal Server Error"})
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Internal Server Error 3333"})
 		return
 	}
 	defer cursor.Close(context.TODO())
@@ -230,7 +230,7 @@ func GetSellOrdersByUID(c *gin.Context) {
 		var sellOrder models.SellOrder
 		if err := cursor.Decode(&sellOrder); err != nil {
 			log.Fatal(err)
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal Server Error"})
+			c.JSON(http.StatusInternalServerError, gin.H{"message": "Internal Server Error 44444"})
 			return
 		}
 		sellOrders = append(sellOrders, sellOrder)
@@ -250,7 +250,7 @@ func GetBuyOrdersByUID(c *gin.Context) {
 	// แปลง user เป็น models.User
 	userObj, ok := user.(models.User)
 	if !ok {
-		c.JSON(http.StatusInternalServerError, gin.H{"message": "Internal Server Error"})
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Internal Server Error 5555"})
 		return
 	}
 	fmt.Print(userObj.ID.Hex())
@@ -261,7 +261,7 @@ func GetBuyOrdersByUID(c *gin.Context) {
 	cursor, err := collection.Find(context.TODO(), filter)
 	if err != nil {
 		log.Fatal(err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal Server Error"})
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Internal Server Error 66666"})
 		return
 	}
 	defer cursor.Close(context.TODO())
@@ -272,7 +272,7 @@ func GetBuyOrdersByUID(c *gin.Context) {
 		var buyOrder models.BuyOrder
 		if err := cursor.Decode(&buyOrder); err != nil {
 			log.Fatal(err)
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal Server Error"})
+			c.JSON(http.StatusInternalServerError, gin.H{"message": "Internal Server Error 7777"})
 			return
 		}
 		buyOrders = append(buyOrders, buyOrder)
