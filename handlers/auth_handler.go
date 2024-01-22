@@ -135,13 +135,15 @@ func Login(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to create token"})
 		return
 	}
-	// // set in token
-	c.SetSameSite(http.SameSiteNoneMode)
-	c.SetCookie("Authorization", tokenString, 120000, "/", "", true, false)
+	// set token in cookie
+	// c.SetSameSite(http.SameSiteNoneMode)
+	// c.SetCookie("Authorization", tokenString, 120000, "/", "", true, false)
 
-	// return response
-	// c.JSON(http.StatusOK, gin.H{"token": tokenString})
-	c.JSON(http.StatusOK, gin.H{"user": found})
+	// sent tokenString
+	c.JSON(http.StatusOK, gin.H{
+		"user":  found,
+		"token": tokenString,
+	})
 }
 
 func Validate(c *gin.Context) {

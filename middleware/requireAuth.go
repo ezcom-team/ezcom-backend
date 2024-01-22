@@ -19,22 +19,27 @@ func RequireAuth(c *gin.Context) {
 	// set ctx
 	ctx, cancel := context.WithTimeout(context.Background(), 1000*time.Second)
 	defer cancel()
+	//---------
+	// Get the token from the Authorization header
+	tokenString := c.GetHeader("Authorization")
+
+	//---------
 	// Get the cookie off req
 	// tokenString, err := c.Cookie("Authorization")
-	tokenString, err := c.Cookie("Authorization")
-	tokenStringFromReq, _ := c.Request.Cookie("Authorization")
-	cookieValue := c.Request.Header
+	// tokenString, err := c.Cookie("Authorization")
+	// tokenStringFromReq, _ := c.Request.Cookie("Authorization")
+	// cookieValue := c.Request.Header
 
-	fmt.Println("tokenString")
-	fmt.Println(tokenStringFromReq)
-	fmt.Println(cookieValue)
-	fmt.Println(err)
+	// fmt.Println("tokenString")
+	// fmt.Println(tokenStringFromReq)
+	// fmt.Println(cookieValue)
+	// fmt.Println(err)
 
-	if err != nil {
-		c.AbortWithStatus(http.StatusUnauthorized)
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "tokenString"})
-		return
-	}
+	// if !tokenString {
+	// 	c.AbortWithStatus(http.StatusUnauthorized)
+	// 	c.JSON(http.StatusUnauthorized, gin.H{"error": "tokenString"})
+	// 	return
+	// }
 	// Decode/validate it
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		// Don't forget to validate the alg is what you expect:
