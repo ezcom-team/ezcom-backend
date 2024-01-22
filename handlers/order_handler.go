@@ -148,7 +148,8 @@ func CreateBuyOrder(c *gin.Context) {
 		if err == mongo.ErrNoDocuments {
 			match = false
 		}
-		panic(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "someting wrong !!"})
+		return
 	}
 	//เพิ่ม ordermath or buyorder in database
 	//ดึงค่า user จากใน context
