@@ -185,7 +185,7 @@ func CreateBuyOrder(c *gin.Context) {
 		}
 		c.JSON(http.StatusCreated, result)
 	} else {
-		var buyOrder models.BuyOrder
+		// var buyOrder models.BuyOrder
 		buyOrder.Buyer_id = userObj.ID.Hex()
 		buyOrder.CreatedAt = time.Now()
 		collection = db.GetBuyOrder_Collection()
