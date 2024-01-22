@@ -161,7 +161,7 @@ func CreateBuyOrder(c *gin.Context) {
 	// แปลง user เป็น models.User
 	userObj, ok := user.(models.User)
 	if !ok {
-		c.JSON(http.StatusInternalServerError, gin.H{"message": "Internal Server Error"})
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Internal Server Error can't find userObj"})
 		return
 	}
 
