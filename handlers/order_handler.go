@@ -139,9 +139,9 @@ func CreateBuyOrder(c *gin.Context) {
 	var sellOrder models.SellOrder
 	match := true
 	filter := bson.M{
-		"color":      bson.M{"$in": buyOrder.Color},
-		"condition":  bson.M{"$in": buyOrder.Condition},
-		"price":      bson.M{"%lte": buyOrder.Price},
+		"color":     bson.M{"$in": buyOrder.Color},
+		"condition": bson.M{"$in": buyOrder.Condition},
+		// "price":      bson.M{"%lte": buyOrder.Price},
 		"product_id": buyOrder.Product_id,
 	}
 	fmt.Println("color => ", buyOrder.Color)
