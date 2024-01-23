@@ -13,7 +13,6 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 func CreateSellOrder(c *gin.Context) {
@@ -75,6 +74,7 @@ func CreateSellOrder(c *gin.Context) {
 		matchedOrder.Condition = sellOrder.Condition
 		matchedOrder.Price = sellOrder.Price
 		matchedOrder.Product_id = sellOrder.Product_id
+		matchedOrder.Status = "prepare"
 		matchedOrder.CreatedAt = time.Now()
 		collection = db.GetMatchOrder_Collection()
 		result, err := collection.InsertOne(context.Background(), matchedOrder)
@@ -87,6 +87,14 @@ func CreateSellOrder(c *gin.Context) {
 			"result": result.InsertedID,
 			"type":   "matchedOrder",
 		})
+
+		//delete buyorder
+		var collection = db.GetProcuct_Collection()
+		_, err = collection.DeleteOne(context.Background(), bson.M{"_id": buyOrder.ID})
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete buyOrder"})
+			return
+		}
 	} else {
 		sellOrder.Seller_id = userObj.ID.Hex()
 		sellOrder.CreatedAt = time.Now()
@@ -99,32 +107,17 @@ func CreateSellOrder(c *gin.Context) {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create product"})
 			return
 		}
-		// update product increase Quantity
-		var foundProduct models.Product
+		// อัพเดทค่าใน product
 		productObjID, err := primitive.ObjectIDFromHex(sellOrder.Product_id)
-		fmt.Println("sellOrder.Product_id is ")
-		fmt.Println(sellOrder.Product_id)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err})
 			return
 		}
-		foundProduct, err = models.GetProduct(productObjID)
+		err = models.UpdateProductQuantity(productObjID)
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to find product"})
-			return
+			c.JSON(http.StatusBadRequest, err)
 		}
-		if sellOrder.Price < foundProduct.Price {
-			err = models.UpdateProductQuantity(productObjID, foundProduct.Quantity+1, sellOrder.Price)
-			if err != nil {
-				c.JSON(http.StatusBadRequest, err)
-			}
-		} else {
-			err = models.UpdateProductQuantity(productObjID, foundProduct.Quantity+1, foundProduct.Price)
-			if err != nil {
-				c.JSON(http.StatusBadRequest, err)
-			}
-		}
-
+		// ส่งค่าให้ client
 		c.JSON(http.StatusCreated, gin.H{
 			"result": result.InsertedID,
 			"type":   "sellOrder",
@@ -153,9 +146,9 @@ func CreateBuyOrder(c *gin.Context) {
 	}
 
 	// กำหนด options เพื่อเรียงลำดับตาม create_at ในลำดับจากน้อยไปมาก
-	options := options.FindOne().SetSort(bson.D{{Key: "createAt", Value: 1}})
+	// options := options.FindOne().SetSort(bson.D{{Key: "createAt", Value: 1}})
 
-	err := collection.FindOne(context.Background(), filter, options).Decode(&sellOrder)
+	err := collection.FindOne(context.Background(), filter).Decode(&sellOrder)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			match = false
@@ -197,6 +190,14 @@ func CreateBuyOrder(c *gin.Context) {
 			"result": result.InsertedID,
 			"type":   "matchedOrder",
 		})
+
+		//delete sellOrder
+		var collection = db.GetProcuct_Collection()
+		_, err = collection.DeleteOne(context.Background(), bson.M{"_id": sellOrder.ID})
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete sellOrder"})
+			return
+		}
 	} else {
 		// var buyOrder models.BuyOrder
 		buyOrder.Buyer_id = userObj.ID.Hex()

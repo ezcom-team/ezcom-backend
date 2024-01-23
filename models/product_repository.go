@@ -3,10 +3,13 @@ package models
 import (
 	"context"
 	"ezcom/db"
+	"fmt"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 func GetAllProducts() ([]Product, error) {
@@ -55,18 +58,45 @@ func GetProduct(objID primitive.ObjectID) (Product, error) {
 
 }
 
-func UpdateProductQuantity(objID primitive.ObjectID, quantity int64, price float64) error {
+func UpdateProductQuantity(objID primitive.ObjectID) error {
+	var collection = db.GetSellOrder_Collection()
 
+	// นับ จำนวน sellOrder
+	count, err := collection.CountDocuments(context.Background(), bson.M{})
+	if err != nil {
+		return err
+	}
+	// หา price ที่ถูกที่สุดใน db
+	filter := bson.M{}
+	options := options.FindOne().SetSort(bson.D{{Key: "price", Value: 1}})
+
+	// Find the document with the smallest value
+	var result SellOrder
+	var price float64
+	err = collection.FindOne(context.Background(), filter, options).Decode(&result)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			fmt.Println("No documents found in sellOrder or sellOrder is empty")
+			price = 0
+		} else {
+			return err
+		}
+
+	} else {
+		price = result.Price
+	}
+
+	// เปลี่ยนค่า ใน Product
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	update := bson.M{
 		"$set": bson.M{
-			"quantity": quantity,
+			"quantity": count,
 			"price":    price,
 		},
 	}
-	var collection = db.GetProcuct_Collection()
-	_, err := collection.UpdateOne(ctx, bson.M{"_id": objID}, update)
+	collection = db.GetProcuct_Collection()
+	_, err = collection.UpdateOne(ctx, bson.M{"_id": objID}, update)
 	if err != nil {
 		return err
 	}
