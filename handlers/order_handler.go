@@ -63,6 +63,7 @@ func CreateSellOrder(c *gin.Context) {
 		}
 
 	}
+	fmt.Println("match is = ", match)
 	if match {
 		sellOrder.Seller_id = userObj.ID.Hex()
 		sellOrder.CreatedAt = time.Now()
