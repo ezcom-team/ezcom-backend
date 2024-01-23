@@ -198,6 +198,16 @@ func CreateBuyOrder(c *gin.Context) {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete sellOrder"})
 			return
 		}
+		//update product
+		productObjID, err := primitive.ObjectIDFromHex(sellOrder.Product_id)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err})
+			return
+		}
+		err = models.UpdateProductQuantity(productObjID)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, err)
+		}
 	} else {
 		// var buyOrder models.BuyOrder
 		buyOrder.Buyer_id = userObj.ID.Hex()
