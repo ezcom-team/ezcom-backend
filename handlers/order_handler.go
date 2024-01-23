@@ -310,6 +310,67 @@ func GetBuyOrdersByUID(c *gin.Context) {
 	// Return filtered users as JSON
 	c.JSON(http.StatusOK, buyOrders)
 }
+func GetBuyOrdersByPID(c *gin.Context) {
+	//ดึงค่า user จากใน context
+	productID := c.Param("pid")
+
+	filter := bson.M{"product_id": productID}
+
+	// MongoDB query to find users by uid and type
+	collection := db.GetBuyOrder_Collection()
+	cursor, err := collection.Find(context.TODO(), filter)
+	if err != nil {
+		log.Fatal(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Internal Server Error"})
+		return
+	}
+	defer cursor.Close(context.TODO())
+
+	// Iterate through the results and decode them into the users slice
+	var buyOrders []models.BuyOrder
+	for cursor.Next(context.TODO()) {
+		var buyOrder models.BuyOrder
+		if err := cursor.Decode(&buyOrder); err != nil {
+			log.Fatal(err)
+			c.JSON(http.StatusInternalServerError, gin.H{"message": "Internal Server Error 7777"})
+			return
+		}
+		buyOrders = append(buyOrders, buyOrder)
+	}
+
+	// Return filtered users as JSON
+	c.JSON(http.StatusOK, buyOrders)
+}
+func GetSellOrdersByPID(c *gin.Context) {
+	//ดึงค่า user จากใน context
+	productID := c.Param("pid")
+
+	filter := bson.M{"product_id": productID}
+	// MongoDB query to find users by uid and type
+	collection := db.GetSellOrder_Collection()
+	cursor, err := collection.Find(context.TODO(), filter)
+	if err != nil {
+		log.Fatal(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Internal Server Error 3333"})
+		return
+	}
+	defer cursor.Close(context.TODO())
+
+	// Iterate through the results and decode them into the users slice
+	var sellOrders []models.SellOrder
+	for cursor.Next(context.TODO()) {
+		var sellOrder models.SellOrder
+		if err := cursor.Decode(&sellOrder); err != nil {
+			log.Fatal(err)
+			c.JSON(http.StatusInternalServerError, gin.H{"message": "Internal Server Error 44444"})
+			return
+		}
+		sellOrders = append(sellOrders, sellOrder)
+	}
+
+	// Return filtered users as JSON
+	c.JSON(http.StatusOK, sellOrders)
+}
 func GetSellOrders(c *gin.Context) {
 
 	// MongoDB query to find users by uid and type
