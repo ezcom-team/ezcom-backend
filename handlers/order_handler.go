@@ -89,7 +89,7 @@ func CreateSellOrder(c *gin.Context) {
 		})
 
 		//delete buyorder
-		var collection = db.GetProcuct_Collection()
+		var collection = db.GetSellOrder_Collection()
 		_, err = collection.DeleteOne(context.Background(), bson.M{"_id": buyOrder.ID})
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete buyOrder"})
@@ -139,14 +139,11 @@ func CreateBuyOrder(c *gin.Context) {
 	var sellOrder models.SellOrder
 	match := true
 	filter := bson.M{
-		"color":     bson.M{"$in": buyOrder.Color},
-		"condition": bson.M{"$in": buyOrder.Condition},
-		// "price":      bson.M{"%lte": buyOrder.Price},
+		"color":      bson.M{"$in": buyOrder.Color},
+		"condition":  bson.M{"$in": buyOrder.Condition},
+		"price":      bson.M{"$lte": buyOrder.Price},
 		"product_id": buyOrder.Product_id,
 	}
-	fmt.Println("color => ", buyOrder.Color)
-	x := []string{"a", "b", "c"}
-	fmt.Println("x =>", x)
 
 	// กำหนด options เพื่อเรียงลำดับตาม create_at ในลำดับจากน้อยไปมาก
 	// options := options.FindOne().SetSort(bson.D{{Key: "createAt", Value: 1}})
@@ -196,7 +193,7 @@ func CreateBuyOrder(c *gin.Context) {
 		})
 
 		//delete sellOrder
-		var collection = db.GetProcuct_Collection()
+		var collection = db.GetSellOrder_Collection()
 		_, err = collection.DeleteOne(context.Background(), bson.M{"_id": sellOrder.ID})
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete sellOrder"})
