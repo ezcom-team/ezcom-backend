@@ -98,6 +98,7 @@ func CreateSellOrder(c *gin.Context) {
 	} else {
 		sellOrder.Seller_id = userObj.ID.Hex()
 		sellOrder.CreatedAt = time.Now()
+		sellOrder.Seller_name = userObj.Name
 		//สร้างข้อมูลใน DB
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
@@ -212,6 +213,7 @@ func CreateBuyOrder(c *gin.Context) {
 	} else {
 		// var buyOrder models.BuyOrder
 		buyOrder.Buyer_id = userObj.ID.Hex()
+		buyOrder.Buyer_name = userObj.Name
 		buyOrder.CreatedAt = time.Now()
 		collection = db.GetBuyOrder_Collection()
 		result, err := collection.InsertOne(context.Background(), buyOrder)
