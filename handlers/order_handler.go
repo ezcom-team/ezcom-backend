@@ -20,7 +20,7 @@ func CreateSellOrder(c *gin.Context) {
 	//รับข้อมูลจาก body
 	var sellOrder models.SellOrder
 	if err := c.ShouldBindJSON(&sellOrder); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "what the fuck"})
 		return
 	}
 
