@@ -84,7 +84,6 @@ func CreateSellOrder(c *gin.Context) {
 		}
 		c.JSON(http.StatusCreated, result)
 	} else {
-		var sellOrder models.SellOrder
 		sellOrder.Seller_id = userObj.ID.Hex()
 		sellOrder.CreatedAt = time.Now()
 		//สร้างข้อมูลใน DB
