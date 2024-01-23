@@ -97,6 +97,8 @@ func CreateSellOrder(c *gin.Context) {
 		// update product increase Quantity
 		var foundProduct models.Product
 		productObjID, err := primitive.ObjectIDFromHex(sellOrder.Product_id)
+		fmt.Println(sellOrder.Product_id)
+		fmt.Println(productObjID)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err})
 			return
