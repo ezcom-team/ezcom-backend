@@ -45,16 +45,16 @@ func CreateSellOrder(c *gin.Context) {
 	var buyOrder models.BuyOrder
 	match := true
 	filter := bson.M{
-		"price":      bson.M{"%gte": sellOrder.Price},
+		"price":      bson.M{"$gte": sellOrder.Price},
 		"color":      sellOrder.Color,
 		"product_id": sellOrder.Product_id,
-		"condition":  sellOrder.Condition,
+		// "condition":  sellOrder.Condition,
 	}
 
 	// กำหนด options เพื่อเรียงลำดับตาม create_at ในลำดับจากน้อยไปมาก
-	options := options.FindOne().SetSort(bson.D{{Key: "createAt", Value: 1}})
+	// options := options.FindOne().SetSort(bson.D{{Key: "createAt", Value: 1}})
 
-	err := collection.FindOne(context.Background(), filter, options).Decode(&buyOrder)
+	err := collection.FindOne(context.Background(), filter).Decode(&buyOrder)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			match = false
