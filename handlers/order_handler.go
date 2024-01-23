@@ -56,8 +56,10 @@ func CreateSellOrder(c *gin.Context) {
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			match = false
+		} else {
+			panic(err)
 		}
-		panic(err)
+
 	}
 	if match {
 		sellOrder.Seller_id = userObj.ID.Hex()
