@@ -48,7 +48,7 @@ func CreateSellOrder(c *gin.Context) {
 		"price":      bson.M{"$gte": sellOrder.Price},
 		"color":      sellOrder.Color,
 		"product_id": sellOrder.Product_id,
-		// "condition":  sellOrder.Condition,
+		"condition":  sellOrder.Condition,
 	}
 
 	// กำหนด options เพื่อเรียงลำดับตาม create_at ในลำดับจากน้อยไปมาก
@@ -69,7 +69,7 @@ func CreateSellOrder(c *gin.Context) {
 		sellOrder.CreatedAt = time.Now()
 		// create matchedOder
 		var matchedOrder models.MatchedOrder
-		matchedOrder.Buyer_id = userObj.ID.Hex()
+		matchedOrder.Buyer_id = buyOrder.Buyer_id
 		matchedOrder.Seller_id = sellOrder.Seller_id
 		matchedOrder.Color = sellOrder.Color
 		matchedOrder.Condition = sellOrder.Condition
