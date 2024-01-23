@@ -82,7 +82,10 @@ func CreateSellOrder(c *gin.Context) {
 		} else {
 			c.JSON(http.StatusOK, matchedOrder)
 		}
-		c.JSON(http.StatusCreated, result)
+		c.JSON(http.StatusCreated, gin.H{
+			"result": result.InsertedID,
+			"type":   "matchedOrder",
+		})
 	} else {
 		sellOrder.Seller_id = userObj.ID.Hex()
 		sellOrder.CreatedAt = time.Now()
@@ -121,8 +124,11 @@ func CreateSellOrder(c *gin.Context) {
 			}
 		}
 
-		//ส่งค่ากลับไปให้ client
-		c.JSON(http.StatusCreated, result)
+		c.JSON(http.StatusCreated, gin.H{
+			"result": result.InsertedID,
+			"type":   "sellOrder",
+		})
+
 	}
 
 }
