@@ -140,9 +140,9 @@ func CreateBuyOrder(c *gin.Context) {
 	match := true
 	filter := bson.M{
 		"price":      bson.M{"%lte": buyOrder.Price},
-		"color":      buyOrder.Color,
+		"color":      bson.M{"$in": buyOrder.Color},
 		"product_id": buyOrder.Product_id,
-		"condition":  buyOrder.Condition,
+		"condition":  bson.M{"$in": buyOrder.Condition},
 	}
 
 	// กำหนด options เพื่อเรียงลำดับตาม create_at ในลำดับจากน้อยไปมาก
