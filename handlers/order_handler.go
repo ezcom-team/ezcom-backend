@@ -89,7 +89,7 @@ func CreateSellOrder(c *gin.Context) {
 		})
 
 		//delete buyorder
-		var collection = db.GetSellOrder_Collection()
+		var collection = db.GetBuyOrder_Collection()
 		_, err = collection.DeleteOne(context.Background(), bson.M{"_id": buyOrder.ID})
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete buyOrder"})
