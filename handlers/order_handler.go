@@ -162,7 +162,7 @@ func CreateBuyOrder(c *gin.Context) {
 	// แปลง user เป็น models.User
 	userObj, ok := user.(models.User)
 	if !ok {
-		c.JSON(http.StatusBadGateway, gin.H{"error": "Internal Server Error can't find userObj"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal Server Error can't find"})
 		return
 	}
 
@@ -179,11 +179,12 @@ func CreateBuyOrder(c *gin.Context) {
 		collection = db.GetMatchOrder_Collection()
 		result, err := collection.InsertOne(context.Background(), matchedOrder)
 		if err != nil {
-			c.JSON(http.StatusContinue, gin.H{"error": "99999"})
-		} else {
-			c.JSON(http.StatusOK, matchedOrder)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err})
 		}
-		c.JSON(http.StatusCreated, result)
+		c.JSON(http.StatusCreated, gin.H{
+			"result": result.InsertedID,
+			"type":   "matchedOrder",
+		})
 	} else {
 		// var buyOrder models.BuyOrder
 		buyOrder.Buyer_id = userObj.ID.Hex()
@@ -191,11 +192,12 @@ func CreateBuyOrder(c *gin.Context) {
 		collection = db.GetBuyOrder_Collection()
 		result, err := collection.InsertOne(context.Background(), buyOrder)
 		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "000000"})
-		} else {
-			c.JSON(http.StatusOK, buyOrder)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err})
 		}
-		c.JSON(http.StatusCreated, result)
+		c.JSON(http.StatusCreated, gin.H{
+			"result": result.InsertedID,
+			"type":   "buyOrder",
+		})
 	}
 }
 func GetSellOrdersByUID(c *gin.Context) {
