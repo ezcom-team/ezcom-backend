@@ -98,7 +98,7 @@ func CreateSellOrder(c *gin.Context) {
 		var foundProduct models.Product
 		productObjID, err := primitive.ObjectIDFromHex(sellOrder.Product_id)
 		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid product ID"})
+			c.JSON(http.StatusBadRequest, gin.H{"error": "now u see me"})
 			return
 		}
 		foundProduct, err = models.GetProduct(productObjID)
