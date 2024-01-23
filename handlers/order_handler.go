@@ -139,11 +139,14 @@ func CreateBuyOrder(c *gin.Context) {
 	var sellOrder models.SellOrder
 	match := true
 	filter := bson.M{
-		"price":      bson.M{"%lte": buyOrder.Price},
 		"color":      bson.M{"$in": buyOrder.Color},
-		"product_id": buyOrder.Product_id,
 		"condition":  bson.M{"$in": buyOrder.Condition},
+		"price":      bson.M{"%lte": buyOrder.Price},
+		"product_id": buyOrder.Product_id,
 	}
+	fmt.Println("color => ", buyOrder.Color)
+	x := []string{"a", "b", "c"}
+	fmt.Println("x =>", x)
 
 	// กำหนด options เพื่อเรียงลำดับตาม create_at ในลำดับจากน้อยไปมาก
 	// options := options.FindOne().SetSort(bson.D{{Key: "createAt", Value: 1}})
@@ -156,6 +159,7 @@ func CreateBuyOrder(c *gin.Context) {
 			panic(err)
 		}
 	}
+	fmt.Println("match is ", match)
 	//เพิ่ม ordermath or buyorder in database
 	//ดึงค่า user จากใน context
 	user, exists := c.Get("user")
