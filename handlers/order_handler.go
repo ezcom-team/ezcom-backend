@@ -205,7 +205,7 @@ func CreateBuyOrder(c *gin.Context) {
 		// 	c.JSON(http.StatusBadRequest, gin.H{"error": err})
 		// 	return
 		// }
-		err = models.UpdateProductQuantity(sellOrder.Product_id)
+		err = models.UpdateProductQuantity(buyOrder.Product_id)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, err)
 		}
