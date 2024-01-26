@@ -11,7 +11,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -109,12 +108,12 @@ func CreateSellOrder(c *gin.Context) {
 			return
 		}
 		// อัพเดทค่าใน product
-		productObjID, err := primitive.ObjectIDFromHex(sellOrder.Product_id)
-		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err})
-			return
-		}
-		err = models.UpdateProductQuantity(productObjID)
+		// productObjID, err := primitive.ObjectIDFromHex(sellOrder.Product_id)
+		// if err != nil {
+		// 	c.JSON(http.StatusBadRequest, gin.H{"error": err})
+		// 	return
+		// }
+		err = models.UpdateProductQuantity(sellOrder.Product_id)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, err)
 		}
@@ -201,12 +200,12 @@ func CreateBuyOrder(c *gin.Context) {
 			return
 		}
 		//update product
-		productObjID, err := primitive.ObjectIDFromHex(sellOrder.Product_id)
-		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err})
-			return
-		}
-		err = models.UpdateProductQuantity(productObjID)
+		// productObjID, err := primitive.ObjectIDFromHex(sellOrder.Product_id)
+		// if err != nil {
+		// 	c.JSON(http.StatusBadRequest, gin.H{"error": err})
+		// 	return
+		// }
+		err = models.UpdateProductQuantity(sellOrder.Product_id)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, err)
 		}
