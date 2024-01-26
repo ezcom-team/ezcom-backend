@@ -85,6 +85,7 @@ func CreateProduct(c *gin.Context) {
 
 	var specs models.MouseSpecs
 	if product.Type == "mouse" {
+		var specs models.MouseSpecs
 		specs.Sensor = c.PostForm("sensor")
 		specs.ButtonSwitch = c.PostForm("buttonSwitch")
 		specs.Connection = c.PostForm("connection")
@@ -95,6 +96,24 @@ func CreateProduct(c *gin.Context) {
 		specs.Shape = c.PostForm("shape")
 		specs.Height = c.PostForm("height")
 		specs.Width = c.PostForm("width")
+	} else if product.Type == "keyboard" {
+		var specs models.KeyBoardSpecs
+		specs.Form_Factor = c.PostForm("form_factor")
+		specs.PCB = c.PostForm("PCB")
+		specs.RGB = c.PostForm("RGB")
+		specs.Switches = c.PostForm("switches")
+		specs.Length = c.PostForm("length")
+		specs.Weight = c.PostForm("weight")
+		specs.Height = c.PostForm("height")
+		specs.Width = c.PostForm("width")
+	} else if product.Type == "headset" {
+		var specs models.HeadsetSpecs
+		specs.Headset_Type = c.PostForm("headset_type")
+		specs.Cable_Length = c.PostForm("cable_length")
+		specs.Connection = c.PostForm("connection")
+		specs.Microphone = c.PostForm("microphone")
+		specs.Noise_Cancelling = c.PostForm("noise_cancelling")
+		specs.Weight = c.PostForm("weight")
 	}
 	// store product in database
 	var specsCollection = db.GetSpecs_Collection()
