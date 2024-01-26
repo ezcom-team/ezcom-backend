@@ -66,8 +66,8 @@ func UpdateProductQuantity(objID primitive.ObjectID) error {
 	if err != nil {
 		return err
 	}
-	// หา price ที่ถูกที่สุดใน db
-	filter := bson.M{}
+	// หา price ที่ถูกที่สุดใน db haha
+	filter := bson.M{"_id": objID}
 	options := options.FindOne().SetSort(bson.D{{Key: "price", Value: 1}})
 
 	// Find the document with the smallest value
