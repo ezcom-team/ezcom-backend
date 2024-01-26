@@ -96,7 +96,11 @@ func UpdateProductQuantity(pid string) error {
 		},
 	}
 	collection = db.GetProcuct_Collection()
-	_, err = collection.UpdateOne(ctx, bson.M{"product_id": pid}, update)
+	productObjID, err := primitive.ObjectIDFromHex(pid)
+	if err != nil {
+		return err
+	}
+	_, err = collection.UpdateOne(ctx, bson.M{"_id": productObjID}, update)
 	if err != nil {
 		return err
 	}
