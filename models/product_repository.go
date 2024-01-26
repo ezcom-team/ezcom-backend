@@ -62,7 +62,7 @@ func UpdateProductQuantity(objID primitive.ObjectID) error {
 	var collection = db.GetSellOrder_Collection()
 
 	// นับ จำนวน sellOrder
-	count, err := collection.CountDocuments(context.Background(), bson.M{})
+	count, err := collection.CountDocuments(context.Background(), bson.M{"_id": objID})
 	if err != nil {
 		return err
 	}
