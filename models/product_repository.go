@@ -58,16 +58,16 @@ func GetProduct(objID primitive.ObjectID) (Product, error) {
 
 }
 
-func UpdateProductQuantity(objID primitive.ObjectID) error {
+func UpdateProductQuantity(pid string) error {
 	var collection = db.GetSellOrder_Collection()
 
 	// นับ จำนวน sellOrder
-	count, err := collection.CountDocuments(context.Background(), bson.M{"_id": objID})
+	count, err := collection.CountDocuments(context.Background(), bson.M{"product_id": pid})
 	if err != nil {
 		return err
 	}
 	// หา price ที่ถูกที่สุดใน db haha
-	filter := bson.M{"_id": objID}
+	filter := bson.M{"product_id": pid}
 	options := options.FindOne().SetSort(bson.D{{Key: "price", Value: 1}})
 
 	// Find the document with the smallest value
@@ -96,7 +96,7 @@ func UpdateProductQuantity(objID primitive.ObjectID) error {
 		},
 	}
 	collection = db.GetProcuct_Collection()
-	_, err = collection.UpdateOne(ctx, bson.M{"_id": objID}, update)
+	_, err = collection.UpdateOne(ctx, bson.M{"product_id": pid}, update)
 	if err != nil {
 		return err
 	}
