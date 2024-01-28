@@ -5,6 +5,7 @@ import (
 	"context"
 	"ezcom/db"
 	"ezcom/models"
+	"fmt"
 	"io"
 	"net/http"
 	"strconv"
@@ -213,7 +214,7 @@ func GetSpecByID(c *gin.Context) {
 		return
 	}
 	var spec interface{} // ประกาศตัวแปร spec ไว้นอก switch
-
+	fmt.Println("specType is ", specType)
 	switch specType {
 	case "Mouse":
 		spec = models.MouseSpecs{}
