@@ -198,9 +198,13 @@ func GetProductByID(c *gin.Context) {
 	c.JSON(http.StatusOK, product)
 }
 
+type findTypeById struct {
+}
+
 // GetProductByID with specs
 func GetSpecByID(c *gin.Context) {
 	specID := c.Param("id")
+	specType := c.Param("type")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	objID, err := primitive.ObjectIDFromHex(specID)
@@ -208,8 +212,19 @@ func GetSpecByID(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid product ID"})
 		return
 	}
+	var spec interface{} // ประกาศตัวแปร spec ไว้นอก switch
 
-	var spec models.MouseSpecs
+	switch specType {
+	case "Mouse":
+		spec = models.MouseSpecs{}
+	case "Keyboard":
+		spec = models.KeyBoardSpecs{}
+	case "Headset":
+		spec = models.HeadsetSpecs{}
+	default:
+		spec = models.MouseSpecs{}
+	}
+
 	var collection = db.GetSpecs_Collection()
 
 	err = collection.FindOne(ctx, bson.M{"_id": objID}).Decode(&spec)

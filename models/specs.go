@@ -27,7 +27,7 @@ type KeyBoardSpecs struct {
 
 type HeadsetSpecs struct {
 	SpecsID          string `bson:"specId"`
-	Headset_Type             string `bson:"headset_type"`
+	Headset_Type     string `bson:"headset_type"`
 	Cable_Length     string `bson:"cable_length"`
 	Microphone       string `bson:"microphone"`
 	Connection       string `bson:"connection"`

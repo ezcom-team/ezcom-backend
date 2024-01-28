@@ -19,7 +19,7 @@ func Setup(router *gin.Engine) {
 		productGroup.POST("", handlers.CreateProduct)
 		productGroup.GET("/", handlers.GetProducts)
 		productGroup.GET("/:id", handlers.GetProductByID)
-		productGroup.GET("/spec/:id", handlers.GetSpecByID)
+		productGroup.GET("/spec/:type/:id", handlers.GetSpecByID)
 		productGroup.PUT("/:id", handlers.UpdateProduct)
 		productGroup.DELETE("/:id", handlers.DeleteProduct)
 	}
