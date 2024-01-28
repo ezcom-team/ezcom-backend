@@ -214,16 +214,20 @@ func GetSpecByID(c *gin.Context) {
 		return
 	}
 	var spec interface{} // ประกาศตัวแปร spec ไว้นอก switch
-	fmt.Println("specType is ", specType)
+
 	switch specType {
 	case "Mouse":
 		spec = models.MouseSpecs{}
+		fmt.Println("M")
 	case "Keyboard":
 		spec = models.KeyBoardSpecs{}
+		fmt.Println("K")
 	case "Headset":
 		spec = models.HeadsetSpecs{}
+		fmt.Println("H")
 	default:
-		spec = models.MouseSpecs{}
+		spec = models.KeyBoardSpecs{}
+		fmt.Println("O")
 	}
 
 	var collection = db.GetSpecs_Collection()
@@ -237,6 +241,7 @@ func GetSpecByID(c *gin.Context) {
 		}
 		return
 	}
+	fmt.Println(spec)
 
 	c.JSON(http.StatusOK, spec)
 }
