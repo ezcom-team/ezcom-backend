@@ -1,7 +1,6 @@
 package models
 
 type MouseSpecs struct {
-	SpecsID      string `bson:"specId"`
 	Sensor       string `bson:"sensor"`
 	ButtonSwitch string `bson:"buttonSwitch"`
 	Connection   string `bson:"connection"`
@@ -14,7 +13,6 @@ type MouseSpecs struct {
 	Width        string `bson:"width"`
 }
 type KeyBoardSpecs struct {
-	SpecsID     string `bson:"specId"`
 	Form_Factor string `bson:"form_factor"`
 	PCB         string `bson:"PCB"`
 	Height      string `bson:"height"`
@@ -26,7 +24,6 @@ type KeyBoardSpecs struct {
 }
 
 type HeadsetSpecs struct {
-	SpecsID          string `bson:"specId"`
 	Headset_Type     string `bson:"headset_type"`
 	Cable_Length     string `bson:"cable_length"`
 	Microphone       string `bson:"microphone"`

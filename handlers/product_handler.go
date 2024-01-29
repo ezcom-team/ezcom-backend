@@ -84,7 +84,6 @@ func CreateProduct(c *gin.Context) {
 	product.Image = "https://firebasestorage.googleapis.com/v0/b/ezcom-eaa21.appspot.com/o/" + imagePath + "?alt=media"
 	// check and set specs
 
-	var specs models.MouseSpecs
 	if product.Type == "mouse" {
 		var specs models.MouseSpecs
 		specs.Sensor = c.PostForm("sensor")
@@ -96,7 +95,22 @@ func CreateProduct(c *gin.Context) {
 		specs.ButtonForce = c.PostForm("buttonForce")
 		specs.Shape = c.PostForm("shape")
 		specs.Height = c.PostForm("height")
-		specs.Width = c.PostForm("width")
+		specs.Width = c.PostForm("width") // store product in database
+		var specsCollection = db.GetSpecs_Collection()
+		specsResult, err := specsCollection.InsertOne(context.Background(), specs)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create specs"})
+			return
+		}
+		product.Specs = specsResult.InsertedID.(primitive.ObjectID).Hex()
+		c.JSON(http.StatusCreated, specsResult.InsertedID)
+		var collection = db.GetProcuct_Collection()
+		result, err := collection.InsertOne(context.Background(), product)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create product"})
+			return
+		}
+		c.JSON(http.StatusCreated, result.InsertedID)
 	} else if product.Type == "keyboard" {
 		var specs models.KeyBoardSpecs
 		specs.Form_Factor = c.PostForm("form_factor")
@@ -107,6 +121,22 @@ func CreateProduct(c *gin.Context) {
 		specs.Weight = c.PostForm("weight")
 		specs.Height = c.PostForm("height")
 		specs.Width = c.PostForm("width")
+		// store product in database
+		var specsCollection = db.GetSpecs_Collection()
+		specsResult, err := specsCollection.InsertOne(context.Background(), specs)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create specs"})
+			return
+		}
+		product.Specs = specsResult.InsertedID.(primitive.ObjectID).Hex()
+		c.JSON(http.StatusCreated, specsResult.InsertedID)
+		var collection = db.GetProcuct_Collection()
+		result, err := collection.InsertOne(context.Background(), product)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create product"})
+			return
+		}
+		c.JSON(http.StatusCreated, result.InsertedID)
 	} else if product.Type == "headset" {
 		var specs models.HeadsetSpecs
 		specs.Headset_Type = c.PostForm("headset_type")
@@ -115,23 +145,24 @@ func CreateProduct(c *gin.Context) {
 		specs.Microphone = c.PostForm("microphone")
 		specs.Noise_Cancelling = c.PostForm("noise_cancelling")
 		specs.Weight = c.PostForm("weight")
+		// store product in database
+		var specsCollection = db.GetSpecs_Collection()
+		specsResult, err := specsCollection.InsertOne(context.Background(), specs)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create specs"})
+			return
+		}
+		product.Specs = specsResult.InsertedID.(primitive.ObjectID).Hex()
+		c.JSON(http.StatusCreated, specsResult.InsertedID)
+		var collection = db.GetProcuct_Collection()
+		result, err := collection.InsertOne(context.Background(), product)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create product"})
+			return
+		}
+		c.JSON(http.StatusCreated, result.InsertedID)
 	}
-	// store product in database
-	var specsCollection = db.GetSpecs_Collection()
-	specsResult, err := specsCollection.InsertOne(context.Background(), specs)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create specs"})
-		return
-	}
-	product.Specs = specsResult.InsertedID.(primitive.ObjectID).Hex()
-	c.JSON(http.StatusCreated, specsResult.InsertedID)
-	var collection = db.GetProcuct_Collection()
-	result, err := collection.InsertOne(context.Background(), product)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create product"})
-		return
-	}
-	c.JSON(http.StatusCreated, result.InsertedID)
+
 }
 
 func GetProducts(c *gin.Context) {
@@ -243,7 +274,8 @@ func GetSpecByID(c *gin.Context) {
 	}
 	fmt.Println(spec)
 
-	c.JSON(http.StatusOK, spec)
+	c.JSON(http.StatusOK, gin.H{"spec": spec})
+
 }
 
 // UpdateProduct updates an existing product
