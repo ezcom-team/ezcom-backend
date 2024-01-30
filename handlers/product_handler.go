@@ -263,7 +263,7 @@ func GetSpecByID(c *gin.Context) {
 		}
 		fmt.Println(spec)
 
-		c.JSON(http.StatusOK, gin.H{"spec": spec})
+		c.JSON(http.StatusOK, spec)
 	case "Keyboard":
 		var spec models.KeyBoardSpecs
 		fmt.Println("K")
@@ -280,7 +280,7 @@ func GetSpecByID(c *gin.Context) {
 		}
 		fmt.Println(spec)
 
-		c.JSON(http.StatusOK, gin.H{"spec": spec})
+		c.JSON(http.StatusOK, spec)
 	case "Headset":
 		var spec models.HeadsetSpecs
 		fmt.Println("H")
@@ -297,24 +297,9 @@ func GetSpecByID(c *gin.Context) {
 		}
 		fmt.Println(spec)
 
-		c.JSON(http.StatusOK, gin.H{"spec": spec})
+		c.JSON(http.StatusOK, spec)
 	default:
-		var spec models.KeyBoardSpecs
-		fmt.Println("O")
-		var collection = db.GetSpecs_Collection()
-
-		err = collection.FindOne(ctx, bson.M{"_id": objID}).Decode(&spec)
-		if err != nil {
-			if err == mongo.ErrNoDocuments {
-				c.JSON(http.StatusNotFound, gin.H{"error": "Spec not found"})
-			} else {
-				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve spec"})
-			}
-			return
-		}
-		fmt.Println(spec)
-
-		c.JSON(http.StatusOK, gin.H{"spec": spec})
+		c.JSON(http.StatusBadRequest, "don't have spec type yet")
 	}
 }
 
