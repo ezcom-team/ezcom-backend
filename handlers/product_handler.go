@@ -244,38 +244,78 @@ func GetSpecByID(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid product ID"})
 		return
 	}
-	var spec interface{} // ประกาศตัวแปร spec ไว้นอก switch
+	// var spec interface{} // ประกาศตัวแปร spec ไว้นอก switch
 
 	switch specType {
 	case "Mouse":
-		spec = models.MouseSpecs{}
+		var spec models.MouseSpecs
 		fmt.Println("M")
-	case "Keyboard":
-		spec = models.KeyBoardSpecs{}
-		fmt.Println("K")
-	case "Headset":
-		spec = models.HeadsetSpecs{}
-		fmt.Println("H")
-	default:
-		spec = models.KeyBoardSpecs{}
-		fmt.Println("O")
-	}
+		var collection = db.GetSpecs_Collection()
 
-	var collection = db.GetSpecs_Collection()
-
-	err = collection.FindOne(ctx, bson.M{"_id": objID}).Decode(&spec)
-	if err != nil {
-		if err == mongo.ErrNoDocuments {
-			c.JSON(http.StatusNotFound, gin.H{"error": "Spec not found"})
-		} else {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve spec"})
+		err = collection.FindOne(ctx, bson.M{"_id": objID}).Decode(&spec)
+		if err != nil {
+			if err == mongo.ErrNoDocuments {
+				c.JSON(http.StatusNotFound, gin.H{"error": "Spec not found"})
+			} else {
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve spec"})
+			}
+			return
 		}
-		return
+		fmt.Println(spec)
+
+		c.JSON(http.StatusOK, gin.H{"spec": spec})
+	case "Keyboard":
+		var spec models.KeyBoardSpecs
+		fmt.Println("K")
+		var collection = db.GetSpecs_Collection()
+
+		err = collection.FindOne(ctx, bson.M{"_id": objID}).Decode(&spec)
+		if err != nil {
+			if err == mongo.ErrNoDocuments {
+				c.JSON(http.StatusNotFound, gin.H{"error": "Spec not found"})
+			} else {
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve spec"})
+			}
+			return
+		}
+		fmt.Println(spec)
+
+		c.JSON(http.StatusOK, gin.H{"spec": spec})
+	case "Headset":
+		var spec models.HeadsetSpecs
+		fmt.Println("H")
+		var collection = db.GetSpecs_Collection()
+
+		err = collection.FindOne(ctx, bson.M{"_id": objID}).Decode(&spec)
+		if err != nil {
+			if err == mongo.ErrNoDocuments {
+				c.JSON(http.StatusNotFound, gin.H{"error": "Spec not found"})
+			} else {
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve spec"})
+			}
+			return
+		}
+		fmt.Println(spec)
+
+		c.JSON(http.StatusOK, gin.H{"spec": spec})
+	default:
+		var spec models.KeyBoardSpecs
+		fmt.Println("O")
+		var collection = db.GetSpecs_Collection()
+
+		err = collection.FindOne(ctx, bson.M{"_id": objID}).Decode(&spec)
+		if err != nil {
+			if err == mongo.ErrNoDocuments {
+				c.JSON(http.StatusNotFound, gin.H{"error": "Spec not found"})
+			} else {
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve spec"})
+			}
+			return
+		}
+		fmt.Println(spec)
+
+		c.JSON(http.StatusOK, gin.H{"spec": spec})
 	}
-	fmt.Println(spec)
-
-	c.JSON(http.StatusOK, gin.H{"spec": spec})
-
 }
 
 // UpdateProduct updates an existing product
