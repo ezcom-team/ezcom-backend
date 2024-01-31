@@ -67,6 +67,8 @@ func CreateSellOrder(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, err)
 		return
 	}
+	fmt.Println("product found")
+	fmt.Println(productFound)
 	if match {
 		sellOrder.Seller_id = userObj.ID.Hex()
 		sellOrder.CreatedAt = time.Now()
