@@ -180,11 +180,13 @@ func CreateBuyOrder(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal Server Error can't find"})
 		return
 	}
-	productFound, err := models.GetProductByIdD(sellOrder.Product_id)
+	productFound, err := models.GetProductByIdD(buyOrder.Product_id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, err)
 		return
 	}
+	fmt.Println("product found is =")
+	fmt.Println(productFound)
 	if match {
 		// create matchedOder
 		var matchedOrder models.MatchedOrder
