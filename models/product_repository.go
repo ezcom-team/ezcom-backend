@@ -106,3 +106,21 @@ func UpdateProductQuantity(pid string) error {
 	}
 	return nil
 }
+
+func GetProductByIdD(pid string) (Product, error) {
+	productObjID, err := primitive.ObjectIDFromHex(pid)
+	if err != nil {
+		return Product{}, err
+	}
+	collection := db.GetProcuct_Collection()
+	var productFound Product
+	err = collection.FindOne(context.Background(), bson.M{"_id": productObjID}).Decode(&productFound)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			fmt.Println("No documents found in sellOrder or sellOrder is empty")
+		} else {
+			return Product{}, err
+		}
+	}
+	return productFound, nil
+}

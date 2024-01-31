@@ -61,12 +61,19 @@ func CreateSellOrder(c *gin.Context) {
 		}
 
 	}
-	fmt.Println("match is = ", match)
+	// ดึงข้อมูล product มาเพื่อ เอา P.image และ P.name
+	productFound, err := models.GetProductByIdD(sellOrder.Product_id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
 	if match {
 		sellOrder.Seller_id = userObj.ID.Hex()
 		sellOrder.CreatedAt = time.Now()
 		// create matchedOder
 		var matchedOrder models.MatchedOrder
+		matchedOrder.Product_img = productFound.Image
+		matchedOrder.Product_name = productFound.Name
 		matchedOrder.Buyer_id = buyOrder.Buyer_id
 		matchedOrder.Seller_id = sellOrder.Seller_id
 		matchedOrder.Color = sellOrder.Color
@@ -98,6 +105,8 @@ func CreateSellOrder(c *gin.Context) {
 		sellOrder.Seller_id = userObj.ID.Hex()
 		sellOrder.CreatedAt = time.Now()
 		sellOrder.Seller_name = userObj.Name
+		sellOrder.Product_img = productFound.Image
+		sellOrder.Product_name = productFound.Name
 		//สร้างข้อมูลใน DB
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
@@ -171,10 +180,16 @@ func CreateBuyOrder(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal Server Error can't find"})
 		return
 	}
-
+	productFound, err := models.GetProductByIdD(sellOrder.Product_id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
 	if match {
 		// create matchedOder
 		var matchedOrder models.MatchedOrder
+		matchedOrder.Product_img = productFound.Image
+		matchedOrder.Product_name = productFound.Name
 		matchedOrder.Buyer_id = userObj.ID.Hex()
 		matchedOrder.Seller_id = sellOrder.Seller_id
 		matchedOrder.Color = sellOrder.Color
@@ -211,6 +226,8 @@ func CreateBuyOrder(c *gin.Context) {
 		}
 	} else {
 		// var buyOrder models.BuyOrder
+		buyOrder.Product_img = productFound.Image
+		buyOrder.Product_name = productFound.Name
 		buyOrder.Buyer_id = userObj.ID.Hex()
 		buyOrder.Buyer_name = userObj.Name
 		buyOrder.CreatedAt = time.Now()
