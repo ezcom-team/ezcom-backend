@@ -39,7 +39,7 @@ func Setup(router *gin.Engine) {
 		orderGroup.GET("/buy", middleware.RequireAuth, handlers.GetBuyOrdersByUID)       // ควบรวม
 		orderGroup.GET("/buys", middleware.RequireAuth, handlers.GetBuyOrders)           // ควบรวม
 		orderGroup.GET("/buys/:pid", middleware.RequireAuth, handlers.GetBuyOrdersByPID) // ควบรวม
-		orderGroup.GET("/matched_order", middleware.RequireAuth, handlers.GetMatchedOrder) // ควบรวม
+		orderGroup.GET("/matched-order", middleware.RequireAuth, handlers.GetMatchedOrder) // ควบรวม
 	}
 	specsGroup := router.Group("/specs")
 	{
