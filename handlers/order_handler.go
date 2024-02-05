@@ -444,3 +444,51 @@ func GetBuyOrders(c *gin.Context) {
 	// Return filtered users as JSON
 	c.JSON(http.StatusOK, buyOrders)
 }
+
+func GetMatchedOrder(c *gin.Context) {
+	//ดึงค่า user จากใน context
+	user, exists := c.Get("user")
+	if !exists {
+		// ไม่พบค่า "user" ใน context
+		c.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized"})
+		return
+	}
+	// แปลง user เป็น models.User
+	userObj, ok := user.(models.User)
+	if !ok {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Internal Server Error"})
+		return
+	}
+	
+	filter := bson.M{
+		"$or": []bson.M{
+			{"buyer_id": userObj.ID.Hex()},
+			{"seller_id": userObj.ID.Hex()},
+		},
+	}
+
+	// MongoDB query to find users by uid and type
+	collection := db.GetMatchOrder_Collection()
+	cursor, err := collection.Find(context.TODO(), filter)
+	if err != nil {
+		log.Fatal(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Internal Server Error"})
+		return
+	}
+	defer cursor.Close(context.TODO())
+
+	// Iterate through the results and decode them into the users slice
+	var matchedOrders []models.MatchedOrder
+	for cursor.Next(context.TODO()) {
+		var matchedOrder models.MatchedOrder
+		if err := cursor.Decode(&matchedOrder); err != nil {
+			log.Fatal(err)
+			c.JSON(http.StatusInternalServerError, gin.H{"message": "Internal Server Error"})
+			return
+		}
+		matchedOrders = append(matchedOrders, matchedOrder)
+	}
+
+	// Return filtered users as JSON
+	c.JSON(http.StatusOK, matchedOrders)
+}
