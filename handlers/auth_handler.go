@@ -33,6 +33,7 @@ func Singup(c *gin.Context) {
 	user.Email = c.PostForm("email")
 	user.Password = c.PostForm("password")
 	user.Role = c.PostForm("role")
+	fmt.Print("user data =>")
 	fmt.Print(user.Name, user.Email, user.Password, user.Role)
 	// if err := c.BindJSON(&user); err != nil {
 	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to read body"})
