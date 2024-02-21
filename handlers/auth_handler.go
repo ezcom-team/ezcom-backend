@@ -28,13 +28,18 @@ func Singup(c *gin.Context) {
 	defer cancel()
 	// bind request.body with user
 	var user models.User
+	if err := c.ShouldBind(&user); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
-	user.Name = c.PostForm("name")
-	user.Email = c.PostForm("email")
-	user.Password = c.PostForm("password")
-	user.Role = c.PostForm("role")
-	fmt.Print("user data => ")
+	// user.Name = c.PostForm("name")
+	// user.Email = c.PostForm("email")
+	// user.Password = c.PostForm("password")
+	// user.Role = c.PostForm("role")
+	// fmt.Print("user data => ")
 	fmt.Print(user.Name, user.Email, user.Password, user.Role)
+
 	// if err := c.BindJSON(&user); err != nil {
 	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to read body"})
 	// 	return
@@ -53,6 +58,7 @@ func Singup(c *gin.Context) {
 	if err != nil {
 		haveFile = false
 	}
+	// file = user.File
 	if haveFile {
 		imagePath := file.Filename
 
