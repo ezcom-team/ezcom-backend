@@ -48,11 +48,7 @@ func Singup(c *gin.Context) {
 	haveFile := true
 	file, err := c.FormFile("file")
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "File not found",
-		})
 		haveFile = false
-		return
 	}
 	if haveFile {
 		imagePath := file.Filename
