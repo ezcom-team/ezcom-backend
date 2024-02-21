@@ -45,44 +45,47 @@ func Singup(c *gin.Context) {
 	user.Password = string(hash)
 
 	// store file
+	haveFile := true
 	file, err := c.FormFile("file")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "File not found",
 		})
+		haveFile = false
 		return
 	}
-	imagePath := file.Filename
+	if haveFile {
+		imagePath := file.Filename
 
-	bucket := "ezcom-eaa21.appspot.com"
+		bucket := "ezcom-eaa21.appspot.com"
 
-	wc := db.Storage.Bucket(bucket).Object(imagePath).NewWriter(context.Background())
-	src, err := file.Open()
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
-		})
-		return
+		wc := db.Storage.Bucket(bucket).Object(imagePath).NewWriter(context.Background())
+		src, err := file.Open()
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
+		defer src.Close()
+
+		_, err = io.Copy(wc, src)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
+
+		if err := wc.Close(); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error": "Failed to close the file writer",
+			})
+			return
+		}
+
+		user.File = "https://firebasestorage.googleapis.com/v0/b/ezcom-eaa21.appspot.com/o/" + imagePath + "?alt=media"
 	}
-	defer src.Close()
-
-	_, err = io.Copy(wc, src)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-
-	if err := wc.Close(); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Failed to close the file writer",
-		})
-		return
-	}
-
-	user.File = "https://firebasestorage.googleapis.com/v0/b/ezcom-eaa21.appspot.com/o/" + imagePath + "?alt=media"
-
 	// create the user
 	collection := db.GetUser_Collection()
 	result, err := collection.InsertOne(ctx, user)
