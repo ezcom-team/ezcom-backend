@@ -29,6 +29,13 @@ func Setup(router *gin.Engine) {
 		authGroup.POST("/login", handlers.Login)
 		authGroup.GET("/validate", middleware.RequireAuth, handlers.Validate)
 	}
+	userGroup := router.Group("/user")
+	{
+		userGroup.GET("/user",middleware.RequireAuth,) // Profile
+		userGroup.GET("/users",middleware.RequireAuth,handlers.GetUsers)
+		userGroup.PUT("/:id",middleware.RequireAuth,handlers.UpdateUser)
+		userGroup.DELETE("/:id",middleware.RequireAuth,handlers.DeleteUser)
+	}
 	orderGroup := router.Group("/order")
 	{
 		orderGroup.POST("/sell", middleware.RequireAuth, handlers.CreateSellOrder)

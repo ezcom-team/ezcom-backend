@@ -225,3 +225,96 @@ func GetUser(c *gin.Context) {
 		"file": data,
 	})
 }
+
+func GetUsers(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	// เลือกฐานข้อมูลและคอลเล็กชันที่ต้องการเก็บข้อมูล
+	collection := db.GetUser_Collection()
+
+	// Find all products in the collection
+
+	// "Failed to retrieve products"
+	cursor, err := collection.Find(ctx, bson.M{})
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		return
+	}
+	defer cursor.Close(ctx)
+	// Prepare a slice to hold the products
+	var users []models.User
+
+	// Iterate through the cursor and decode each product
+	for cursor.Next(ctx) {
+		var user models.User
+		if err := cursor.Decode(&user); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to decode product data"})
+			return
+		}
+		users = append(users, user)
+	}
+
+	if err := cursor.Err(); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Cursor error"})
+		return
+	}
+
+	// Return the products as JSON response
+	c.JSON(http.StatusOK, users)
+
+}
+
+func UpdateUser(c *gin.Context) {
+	uid := c.Param("id")
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	objID, err := primitive.ObjectIDFromHex(uid)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid product ID"})
+		return
+	}
+
+	var user models.User
+	if err := c.BindJSON(&user); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
+		return
+	}
+
+	update := bson.M{
+		"$set": user, // ใช้ struct ที่ได้รับเป็นค่าในการอัปเดตทุกฟิลด์
+	}
+	var collection = db.GetUser_Collection()
+	_, err = collection.UpdateOne(ctx, bson.M{"_id": objID}, update)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update product"})
+		return
+	}
+
+	c.Status(http.StatusOK)
+}
+
+// DeleteProduct deletes a product by its ID
+func DeleteUser(c *gin.Context) {
+	userID := c.Param("id")
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	objID, err := primitive.ObjectIDFromHex(userID)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid product ID"})
+		return
+	}
+
+	var collection = db.GetUser_Collection()
+	_, err = collection.DeleteOne(ctx, bson.M{"_id": objID})
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete product"})
+		return
+	}
+
+	c.Status(http.StatusNoContent)
+}

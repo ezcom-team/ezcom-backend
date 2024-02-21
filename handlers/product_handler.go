@@ -323,11 +323,7 @@ func UpdateProduct(c *gin.Context) {
 	}
 
 	update := bson.M{
-		"$set": bson.M{
-			"name":  product.Name,
-			"price": product.Price,
-			"file":  product.Image,
-		},
+		"$set": product, // ใช้ struct ที่ได้รับเป็นค่าในการอัปเดตทุกฟิลด์
 	}
 	var collection = db.GetProcuct_Collection()
 	_, err = collection.UpdateOne(ctx, bson.M{"_id": objID}, update)

@@ -8,5 +8,6 @@ type User struct {
 	Email    string             `bson:"email"`
 	Password string             `bson:"password"`
 	Role     string             `bson:"role"`
+	Point    float64            `bson:"point"`
 	File     string             `bson:"file"`
 }

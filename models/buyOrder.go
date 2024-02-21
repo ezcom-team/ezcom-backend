@@ -17,4 +17,5 @@ type BuyOrder struct {
 	Condition    []string           `bson:"condition" binding:"required"`
 	Color        []string           `bson:"color" binding:"required"`
 	CreatedAt    time.Time          `bson:"createAt"`
+	Verify       string             `bson:"verify"`
 }

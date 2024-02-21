@@ -82,6 +82,7 @@ func CreateSellOrder(c *gin.Context) {
 		matchedOrder.Condition = sellOrder.Condition
 		matchedOrder.Price = sellOrder.Price
 		matchedOrder.Product_id = sellOrder.Product_id
+		matchedOrder.Verify = buyOrder.Verify
 		matchedOrder.Status = "prepare"
 		matchedOrder.CreatedAt = time.Now()
 		collection = db.GetMatchOrder_Collection()
@@ -200,6 +201,7 @@ func CreateBuyOrder(c *gin.Context) {
 		matchedOrder.Condition = sellOrder.Condition
 		matchedOrder.Price = sellOrder.Price
 		matchedOrder.Product_id = sellOrder.Product_id
+		matchedOrder.Verify = buyOrder.Verify
 		matchedOrder.CreatedAt = time.Now()
 		collection = db.GetMatchOrder_Collection()
 		result, err := collection.InsertOne(context.Background(), matchedOrder)
@@ -459,7 +461,7 @@ func GetMatchedOrder(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Internal Server Error"})
 		return
 	}
-	
+
 	filter := bson.M{
 		"$or": []bson.M{
 			{"buyer_id": userObj.ID.Hex()},
