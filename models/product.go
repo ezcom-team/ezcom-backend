@@ -9,8 +9,7 @@ type Product struct {
 	Name     string             `form:"name" binding:"required"`
 	Desc     string             `form:"desc" `
 	Price    float64            `form:"price" binding:"required"`
-	// Image    string             `form:"image" binding:"required"`
-	// Image    string             `form:"image" binding:"required"`
+	Image    string             `form:"image" `
 	Quantity int64              `form:"quantity"`
 	Type     string             `form:"type" binding:"required"`
 	Color    []string           `form:"color" binding:"required"`
