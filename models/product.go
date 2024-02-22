@@ -2,8 +2,6 @@
 package models
 
 import (
-	"mime/multipart"
-
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -13,7 +11,7 @@ type Product struct {
 	Name      string             `bson:"name" binding:"required"`
 	Desc      string             `bson:"desc"`
 	Price     float64            `bson:"price" binding:"required"`
-	Image     multipart.File     `bson:"image"`
+	Image     string             `bson:"image"`
 	ImagePath string             `bson:"imagePath" `
 	Quantity  int64              `bson:"quantity"`
 	Type      string             `bson:"type" binding:"required"`
