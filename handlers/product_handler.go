@@ -27,19 +27,24 @@ type createProductDTO struct {
 }
 
 func CreateProduct(c *gin.Context) {
+	// var product models.Product
+	// product.Name = c.PostForm("name")
+	// product.Type = c.PostForm("type")
+	// product.Desc = c.PostForm("desc")
+	// product.Color = c.PostFormArray("color")
 	var product models.Product
-	product.Name = c.PostForm("name")
-	product.Type = c.PostForm("type")
-	product.Desc = c.PostForm("desc")
-	product.Color = c.PostFormArray("color")
-	priceStr := c.PostForm("price")
+	if err := c.ShouldBind(&product); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 	fmt.Print("formdata is :")
 	fmt.Print(product.Name, product.Type)
-	priceFloat, err := strconv.ParseFloat(priceStr, 64)
-	if err != nil {
-		// Handle the error, possibly return an error response
-	}
-	product.Price = priceFloat
+	// priceStr := c.PostForm("price")
+	// priceFloat, err := strconv.ParseFloat(priceStr, 64)
+	// if err != nil {
+	// 	// Handle the error, possibly return an error response
+	// }
+	// product.Price = priceFloat
 	quantityStr := c.PostForm("quantity")
 	quantityInt, err := strconv.ParseInt(quantityStr, 10, 64)
 	if err != nil {

@@ -6,12 +6,12 @@ import "go.mongodb.org/mongo-driver/bson/primitive"
 // Product struct represents a product in the database
 type Product struct {
 	ID       primitive.ObjectID `bson:"_id,omitempty"`
-	Name     string             `bson:"name"`
-	Desc     string             `bson:"desc"`
-	Price    float64            `bson:"price"`
-	Image    string             `bson:"image"`
-	Quantity int64              `bson:"quantity"`
-	Type     string             `bson:"type"`
-	Color    []string           `bson:"color"`
-	Specs    string             `bson:"specs"`
+	Name     string             `form:"name" binding:"required"`
+	Desc     string             `form:"desc" `
+	Price    float64            `form:"price" binding:"required"`
+	Image    string             `form:"image" binding:"required"`
+	Quantity int64              `form:"quantity"`
+	Type     string             `form:"type" binding:"required"`
+	Color    []string           `form:"color" binding:"required"`
+	Specs    string             `form:"specs"`
 }
