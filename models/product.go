@@ -10,11 +10,11 @@ type Product struct {
 	ID        primitive.ObjectID `bson:"_id,omitempty"`
 	Name      string             `bson:"name" binding:"required"`
 	Desc      string             `bson:"desc"`
-	Price     float64            `bson:"price" binding:"required"`
+	Price     float64            `bson:"price"`
 	Image     string             `bson:"image"`
 	ImagePath string             `bson:"imagePath" `
 	Quantity  int64              `bson:"quantity"`
-	Type      string             `bson:"type" binding:"required"`
-	Color     []string           `bson:"color" binding:"required"`
+	Type      string             `bson:"type"`
+	Color     []string           `bson:"color"`
 	Specs     string             `bson:"specs"`
 }
