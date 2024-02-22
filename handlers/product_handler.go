@@ -33,6 +33,7 @@ func CreateProduct(c *gin.Context) {
 	product.Desc = c.PostForm("desc")
 	product.Color = c.PostFormArray("color")
 	priceStr := c.PostForm("price")
+	fmt.Print(product.Name, product.Type)
 	priceFloat, err := strconv.ParseFloat(priceStr, 64)
 	if err != nil {
 		// Handle the error, possibly return an error response
