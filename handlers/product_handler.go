@@ -41,22 +41,10 @@ func CreateProduct(c *gin.Context) {
 	fmt.Print(product)
 	fmt.Print(product.Name, product.Type)
 	priceStr := c.PostForm("price")
-	priceFloat, err := strconv.ParseFloat(priceStr, 64)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "don't have price",
-		})
-		return
-	}
+	priceFloat, _ := strconv.ParseFloat(priceStr, 64)
 	product.Price = priceFloat
 	quantityStr := c.PostForm("quantity")
-	quantityInt, err := strconv.ParseInt(quantityStr, 10, 64)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "don't have qq",
-		})
-		return
-	}
+	quantityInt, _ := strconv.ParseInt(quantityStr, 10, 64)
 	product.Quantity = int64(quantityInt)
 	// store file
 	file, err := c.FormFile("image")
