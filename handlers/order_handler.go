@@ -79,7 +79,7 @@ func CreateSellOrder(c *gin.Context) {
 		matchedOrder.Buyer_id = buyOrder.Buyer_id
 		matchedOrder.BuyerName = buyOrder.Buyer_name
 		matchedOrder.Seller_id = userObj.ID.Hex()
-		matchedOrder.SellerName = sellOrder.Seller_name
+		matchedOrder.SellerName = userObj.Name
 		matchedOrder.Color = sellOrder.Color
 		matchedOrder.Condition = sellOrder.Condition
 		matchedOrder.Price = sellOrder.Price
