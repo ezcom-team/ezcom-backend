@@ -70,14 +70,16 @@ func CreateSellOrder(c *gin.Context) {
 	fmt.Println("product found")
 	fmt.Println(productFound)
 	if match {
-		sellOrder.Seller_id = userObj.ID.Hex()
-		sellOrder.CreatedAt = time.Now()
+		// sellOrder.Seller_id = userObj.ID.Hex()
+		// sellOrder.CreatedAt = time.Now()
 		// create matchedOder
 		var matchedOrder models.MatchedOrder
-		matchedOrder.Product_img = productFound.ImagePath
+		matchedOrder.Product_img = productFound.Image
 		matchedOrder.Product_name = productFound.Name
 		matchedOrder.Buyer_id = buyOrder.Buyer_id
-		matchedOrder.Seller_id = sellOrder.Seller_id
+		matchedOrder.BuyerName = buyOrder.Buyer_name
+		matchedOrder.Seller_id = userObj.ID.Hex()
+		matchedOrder.SellerName = sellOrder.Seller_name
 		matchedOrder.Color = sellOrder.Color
 		matchedOrder.Condition = sellOrder.Condition
 		matchedOrder.Price = sellOrder.Price
@@ -108,7 +110,7 @@ func CreateSellOrder(c *gin.Context) {
 		sellOrder.Seller_id = userObj.ID.Hex()
 		sellOrder.CreatedAt = time.Now()
 		sellOrder.Seller_name = userObj.Name
-		sellOrder.Product_img = productFound.ImagePath
+		sellOrder.Product_img = productFound.Image
 		sellOrder.Product_name = productFound.Name
 		//สร้างข้อมูลใน DB
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
@@ -193,10 +195,12 @@ func CreateBuyOrder(c *gin.Context) {
 	if match {
 		// create matchedOder
 		var matchedOrder models.MatchedOrder
-		matchedOrder.Product_img = productFound.ImagePath
+		matchedOrder.Product_img = productFound.Image
 		matchedOrder.Product_name = productFound.Name
 		matchedOrder.Buyer_id = userObj.ID.Hex()
+		matchedOrder.BuyerName = userObj.Name
 		matchedOrder.Seller_id = sellOrder.Seller_id
+		matchedOrder.SellerName = sellOrder.Seller_name
 		matchedOrder.Color = sellOrder.Color
 		matchedOrder.Condition = sellOrder.Condition
 		matchedOrder.Price = sellOrder.Price
@@ -232,7 +236,7 @@ func CreateBuyOrder(c *gin.Context) {
 		}
 	} else {
 		// var buyOrder models.BuyOrder
-		buyOrder.Product_img = productFound.ImagePath
+		buyOrder.Product_img = productFound.Image
 		buyOrder.Product_name = productFound.Name
 		buyOrder.Buyer_id = userObj.ID.Hex()
 		buyOrder.Buyer_name = userObj.Name

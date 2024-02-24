@@ -83,7 +83,7 @@ func CreateProduct(c *gin.Context) {
 		return
 	}
 
-	product.ImagePath = "https://firebasestorage.googleapis.com/v0/b/ezcom-eaa21.appspot.com/o/" + imagePath + "?alt=media"
+	product.Image = "https://firebasestorage.googleapis.com/v0/b/ezcom-eaa21.appspot.com/o/" + imagePath + "?alt=media"
 	// check and set specs
 
 	if product.Type == "mouse" {

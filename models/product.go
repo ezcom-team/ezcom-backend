@@ -12,7 +12,6 @@ type Product struct {
 	Desc      string             `bson:"desc"`
 	Price     float64            `bson:"price"`
 	Image     string             `bson:"image"`
-	ImagePath string             `bson:"imagePath" `
 	Quantity  int64              `bson:"quantity"`
 	Type      string             `bson:"type"`
 	Color     []string           `bson:"color"`
