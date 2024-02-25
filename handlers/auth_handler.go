@@ -40,10 +40,10 @@ func Singup(c *gin.Context) {
 	// fmt.Print("user data => ")
 	fmt.Print(user.Name, user.Email, user.Password, user.Role)
 
-	// if err := c.BindJSON(&user); err != nil {
-	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to read body"})
-	// 	return
-	// }
+	if err := c.BindJSON(&user); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to read body"})
+		return
+	}
 	// hash password
 	hash, err := bcrypt.GenerateFromPassword([]byte(user.Password), 10)
 	if err != nil {
