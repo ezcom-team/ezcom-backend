@@ -17,15 +17,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-type createProductDTO struct {
-	Name  string
-	Desc  string
-	Image string
-	Type  string
-	Color []string
-	Specs string
-}
-
 func CreateProduct(c *gin.Context) {
 	var product models.Product
 	product.Name = c.PostForm("name")
@@ -319,8 +310,52 @@ func UpdateProduct(c *gin.Context) {
 	}
 
 	var product models.Product
-	if err := c.BindJSON(&product); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
+	product.Name = c.PostForm("name")
+	product.Desc = c.PostForm("desc")
+	product.Type = c.PostForm("type")
+	product.Color = c.PostFormArray("color")
+	product.Specs = c.PostForm("specs")
+	// store file
+	file, err := c.FormFile("image")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "File not found",
+		})
+		return
+	}
+	imagePath := file.Filename
+
+	bucket := "ezcom-eaa21.appspot.com"
+
+	wc := db.Storage.Bucket(bucket).Object(imagePath).NewWriter(context.Background())
+	src, err := file.Open()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	defer src.Close()
+
+	_, err = io.Copy(wc, src)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	if err := wc.Close(); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Failed to close the file writer",
+		})
+		return
+	}
+
+	product.Image = "https://firebasestorage.googleapis.com/v0/b/ezcom-eaa21.appspot.com/o/" + imagePath + "?alt=media"
+	fmt.Print("product image : ", product.Image)
+	if err := c.Bind(&product); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "shouldbind error"})
 		return
 	}
 
@@ -332,6 +367,49 @@ func UpdateProduct(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update product"})
 		return
+	}
+	if product.Type == "mouse" {
+		var specs models.MouseSpecs
+		specs.Sensor = c.PostForm("sensor")
+		specs.ButtonSwitch = c.PostForm("buttonSwitch")
+		specs.Connection = c.PostForm("connection")
+		specs.Length = c.PostForm("length")
+		specs.Weight = c.PostForm("weight")
+		specs.PollingRate = c.PostForm("pollingRate")
+		specs.ButtonForce = c.PostForm("buttonForce")
+		specs.Shape = c.PostForm("shape")
+		specs.Height = c.PostForm("height")
+		specs.Width = c.PostForm("width") // store product in database
+		update := bson.M{
+			"$set": specs, // ใช้ struct ที่ได้รับเป็นค่าในการอัปเดตทุกฟิลด์
+		}
+		collection = db.GetSpecs_Collection()
+		specID, err := primitive.ObjectIDFromHex(product.Specs)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid spec ID"})
+			return
+		}
+		result, err := collection.UpdateOne(ctx, bson.M{"_id": specID}, update)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update specs"})
+			return
+		}
+
+		// var specsCollection = db.GetSpecs_Collection()
+		// specsResult, err := specsCollection.InsertOne(context.Background(), specs)
+		// if err != nil {
+		// 	c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create specs"})
+		// 	return
+		// }
+		// product.Specs = specsResult.InsertedID.(primitive.ObjectID).Hex()
+		// c.JSON(http.StatusCreated, specsResult.InsertedID)
+		// var collection = db.GetProcuct_Collection()
+		// result, err := collection.InsertOne(context.Background(), product)
+		// if err != nil {
+		// 	c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create product"})
+		// 	return
+		// }
+		c.JSON(http.StatusCreated, result.UpsertedID)
 	}
 
 	c.Status(http.StatusOK)

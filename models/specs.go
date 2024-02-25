@@ -31,3 +31,37 @@ type HeadsetSpecs struct {
 	Noise_Cancelling string `bson:"noise_cancelling"`
 	Weight           string `bson:"weight"`
 }
+
+type GPU struct {
+	NVIDIA_CUDA_Cores string `bson:"nvidia_cuda_cores"`
+	Memory_Size       string `bson:"memory_size"`
+	Boost_Clock       string `bson:"boost_clock"`
+	Memory_Type       string `bson:"memory_type"`
+}
+
+type Mousepad struct {
+	Height         string `bson:"height"`
+	Thickness      string `bson:"thickness"`
+	Material       string `bson:"material"`
+	Length         string `bson:"length"`
+	Stitched_edges string `bson:"stitched_edges"`
+	Glide          string `bson:"glide"`
+}
+
+type CPU struct {
+	Socket           string `bson:"socket"`
+	Threads          string `bson:"threads"`
+	Core_Speed_Base  string `bson:"core_speed_base"`
+	Cores            string `bson:"cores"`
+	TDP              string `bson:"TDP"`
+	Core_Speed_Boost string `bson:"core_speed_boost"`
+}
+type Monitor struct {
+	Size         string `bson:"size"`
+	Aspect_Ratio string `bson:"aspect_ratio"`
+	G_Sync       string `bson:"g_sync"`
+	Panel_Tech   string `bson:"panel_tech"`
+	Resolution   string `bson:"Resolution"`
+	Refresh_Rate string `bson:"refresh_rate"`
+	FreeSync     string `bson:"free_sync"`
+}
