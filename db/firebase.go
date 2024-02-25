@@ -13,7 +13,7 @@ var (
 )
 
 func InitFirebaseApp() error {
-	sa := option.WithCredentialsFile("ezcom-eaa21-6af33392e490.json")
+	sa := option.WithCredentialsFile("ezcom-eaa21-firebase-adminsdk-9zpt0-d8e4765278.json")
 
 	var err error
 

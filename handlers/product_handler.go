@@ -232,9 +232,6 @@ func GetProductByID(c *gin.Context) {
 	c.JSON(http.StatusOK, product)
 }
 
-type findTypeById struct {
-}
-
 // GetProductByID with specs
 func GetSpecByID(c *gin.Context) {
 	specID := c.Param("id")
@@ -318,41 +315,6 @@ func UpdateProduct(c *gin.Context) {
 		return
 	}
 
-	foundProduct,err := models.GetProductByIdD(productID)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err})
-		return
-	}
-	// delete foundProduct.Image
-	client, err := storage.NewClient(ctx, option.WithCredentialsFile("ezcom-eaa21-firebase-adminsdk-9zpt0-d8e4765278.json"))
-	if err != nil {
-		log.Fatalf("Failed to create client: %v", err)
-	}
-	defer client.Close()
-
-	// ชื่อของ bucket ที่เก็บไฟล์
-	bucketName := "ezcom-eaa21.appspot.com"
-
-	// ชื่อของไฟล์ที่ต้องการลบ
-	
-	// Example string
-	path := foundProduct.Image
-
-	// Split the string using "/"
-	parts := strings.Split(path, "/")
-
-	// Print the last element
-	lastIndex := len(parts) - 1
-	fileName := parts[lastIndex]
-
-	// ลบไฟล์
-	err = client.Bucket(bucketName).Object(fileName).Delete(ctx)
-	if err != nil {
-		log.Fatalf("Failed to delete object: %v", err)
-	}
-
-	fmt.Println("Object deleted successfully")
-
 	var product models.Product
 	product.Name = c.PostForm("name")
 	product.Desc = c.PostForm("desc")
@@ -360,44 +322,82 @@ func UpdateProduct(c *gin.Context) {
 	product.Color = c.PostFormArray("color")
 	product.Specs = c.PostForm("specs")
 	// store file
+	updataImage := true
 	file, err := c.FormFile("image")
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "File not found",
-		})
-		return
+		updataImage = false
 	}
-	imagePath := file.Filename
+	if updataImage {
 
-	bucket := "ezcom-eaa21.appspot.com"
+		foundProduct, err := models.GetProductByIdD(productID)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err})
+			return
+		}
+		// delete foundProduct.Image
+		client, err := storage.NewClient(ctx, option.WithCredentialsFile("ezcom-eaa21-firebase-adminsdk-9zpt0-d8e4765278.json"))
+		if err != nil {
+			log.Fatalf("Failed to create client: %v", err)
+		}
+		defer client.Close()
 
-	wc := db.Storage.Bucket(bucket).Object(imagePath).NewWriter(context.Background())
-	src, err := file.Open()
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
-		})
-		return
+		// ชื่อของ bucket ที่เก็บไฟล์
+		bucketName := "ezcom-eaa21.appspot.com"
+
+		// ชื่อของไฟล์ที่ต้องการลบ
+
+		// Example string
+		path := foundProduct.Image
+
+		// Split the string using "/"
+		parts := strings.Split(path, "/")
+
+		// Print the last element
+		lastIndex := len(parts) - 1
+		parts1 := strings.Split(parts[lastIndex], "?")
+		fmt.Println(parts1[0])
+		fileName := parts1[0]
+
+		// ลบไฟล์
+		err = client.Bucket(bucketName).Object(fileName).Delete(ctx)
+		if err != nil {
+			log.Fatalf("Failed to delete object: %v", err)
+		}
+
+		fmt.Println("Object deleted successfully")
+		imagePath := file.Filename
+
+		bucket := "ezcom-eaa21.appspot.com"
+
+		wc := db.Storage.Bucket(bucket).Object(imagePath).NewWriter(context.Background())
+		src, err := file.Open()
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
+		defer src.Close()
+
+		_, err = io.Copy(wc, src)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
+
+		if err := wc.Close(); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error": "Failed to close the file writer",
+			})
+			return
+		}
+
+		product.Image = "https://firebasestorage.googleapis.com/v0/b/ezcom-eaa21.appspot.com/o/" + imagePath + "?alt=media"
+		fmt.Print("product image : ", product.Image)
 	}
-	defer src.Close()
 
-	_, err = io.Copy(wc, src)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-
-	if err := wc.Close(); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Failed to close the file writer",
-		})
-		return
-	}
-
-	product.Image = "https://firebasestorage.googleapis.com/v0/b/ezcom-eaa21.appspot.com/o/" + imagePath + "?alt=media"
-	fmt.Print("product image : ", product.Image)
 	if err := c.Bind(&product); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "shouldbind error"})
 		return
