@@ -327,6 +327,9 @@ func UpdateProduct(c *gin.Context) {
 	if err != nil {
 		updataImage = false
 	}
+	if file != nil {
+		updataImage = false
+	}
 	if updataImage {
 
 		foundProduct, err := models.GetProductByIdD(productID)
@@ -398,10 +401,10 @@ func UpdateProduct(c *gin.Context) {
 		fmt.Print("product image : ", product.Image)
 	}
 
-	if err := c.Bind(&product); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "shouldbind error"})
-		return
-	}
+	// if err := c.Bind(&product); err != nil {
+	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "shouldbind error"})
+	// 	return
+	// }
 
 	update := bson.M{
 		"$set": product, // ใช้ struct ที่ได้รับเป็นค่าในการอัปเดตทุกฟิลด์
