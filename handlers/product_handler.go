@@ -22,12 +22,17 @@ func CreateProduct(c *gin.Context) {
 	product.Name = c.PostForm("name")
 	product.Type = c.PostForm("type")
 	product.Desc = c.PostForm("desc")
-	product.Color = c.PostFormArray("color")
+	color, ok := c.GetPostFormArray("color")
+	if !ok {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "bug color"})
+		return
+	}
+	product.Color = color
 	// var product models.Product
-	// if err := c.ShouldBind(&product); err != nil {
-	// 	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-	// 	return
-	// }
+	if err := c.ShouldBind(&product); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 	fmt.Print("formdata is :")
 	fmt.Print(product)
 	fmt.Print(product.Name, product.Type)
