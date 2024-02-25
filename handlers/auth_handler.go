@@ -33,17 +33,17 @@ func Singup(c *gin.Context) {
 		return
 	}
 
-	// user.Name = c.PostForm("name")
-	// user.Email = c.PostForm("email")
-	// user.Password = c.PostForm("password")
-	// user.Role = c.PostForm("role")
-	// fmt.Print("user data => ")
+	user.Name = c.PostForm("name")
+	user.Email = c.PostForm("email")
+	user.Password = c.PostForm("password")
+	user.Role = c.PostForm("role")
+	fmt.Print("user data => ")
 	fmt.Print(user.Name, user.Email, user.Password, user.Role)
 
-	if err := c.BindJSON(&user); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to read body"})
-		return
-	}
+	// if err := c.BindJSON(&user); err != nil {
+	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to read body"})
+	// 	return
+	// }
 	// hash password
 	hash, err := bcrypt.GenerateFromPassword([]byte(user.Password), 10)
 	if err != nil {
@@ -149,8 +149,8 @@ func Login(c *gin.Context) {
 
 	// sent tokenString
 	c.JSON(http.StatusOK, gin.H{
-		"user":   found,
-		"token":  tokenString,
+		"user":  found,
+		"token": tokenString,
 	})
 }
 
