@@ -7,14 +7,18 @@ import (
 	"ezcom/models"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
+	"cloud.google.com/go/storage"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"google.golang.org/api/option"
 )
 
 func CreateProduct(c *gin.Context) {
@@ -314,6 +318,41 @@ func UpdateProduct(c *gin.Context) {
 		return
 	}
 
+	foundProduct,err := models.GetProductByIdD(productID)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err})
+		return
+	}
+	// delete foundProduct.Image
+	client, err := storage.NewClient(ctx, option.WithCredentialsFile("ezcom-eaa21-firebase-adminsdk-9zpt0-d8e4765278.json"))
+	if err != nil {
+		log.Fatalf("Failed to create client: %v", err)
+	}
+	defer client.Close()
+
+	// ชื่อของ bucket ที่เก็บไฟล์
+	bucketName := "ezcom-eaa21.appspot.com"
+
+	// ชื่อของไฟล์ที่ต้องการลบ
+	
+	// Example string
+	path := foundProduct.Image
+
+	// Split the string using "/"
+	parts := strings.Split(path, "/")
+
+	// Print the last element
+	lastIndex := len(parts) - 1
+	fileName := parts[lastIndex]
+
+	// ลบไฟล์
+	err = client.Bucket(bucketName).Object(fileName).Delete(ctx)
+	if err != nil {
+		log.Fatalf("Failed to delete object: %v", err)
+	}
+
+	fmt.Println("Object deleted successfully")
+
 	var product models.Product
 	product.Name = c.PostForm("name")
 	product.Desc = c.PostForm("desc")
@@ -399,21 +438,6 @@ func UpdateProduct(c *gin.Context) {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update specs"})
 			return
 		}
-
-		// var specsCollection = db.GetSpecs_Collection()
-		// specsResult, err := specsCollection.InsertOne(context.Background(), specs)
-		// if err != nil {
-		// 	c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create specs"})
-		// 	return
-		// }
-		// product.Specs = specsResult.InsertedID.(primitive.ObjectID).Hex()
-		// c.JSON(http.StatusCreated, specsResult.InsertedID)
-		// var collection = db.GetProcuct_Collection()
-		// result, err := collection.InsertOne(context.Background(), product)
-		// if err != nil {
-		// 	c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create product"})
-		// 	return
-		// }
 		c.JSON(http.StatusCreated, result.UpsertedID)
 	}
 
