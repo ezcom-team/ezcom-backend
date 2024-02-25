@@ -399,6 +399,13 @@ func UpdateProduct(c *gin.Context) {
 
 		product.Image = "https://firebasestorage.googleapis.com/v0/b/ezcom-eaa21.appspot.com/o/" + imagePath + "?alt=media"
 		fmt.Print("product image : ", product.Image)
+	} else {
+		foundProduct, err := models.GetProductByIdD(productID)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err})
+			return
+		}
+		product.Image = foundProduct.Image
 	}
 
 	// if err := c.Bind(&product); err != nil {
