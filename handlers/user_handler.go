@@ -19,6 +19,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/gridfs"
+	"golang.org/x/crypto/bcrypt"
 	"google.golang.org/api/option"
 )
 
@@ -286,6 +287,7 @@ func UpdateUser(c *gin.Context) {
 	user.Email = c.PostForm("email")
 	user.Name = c.PostForm("name")
 	user.Role = c.PostForm("role")
+	user.Password = c.PostForm("password")
 
 	// store file
 	updataImage := true
@@ -293,16 +295,12 @@ func UpdateUser(c *gin.Context) {
 	if err != nil {
 		updataImage = false
 	}
-	// if file != nil {
-	// 	updataImage = false
-	// }
+	foundUser, err := models.GetUserByIdD(uid)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err})
+		return
+	}
 	if updataImage {
-
-		foundUser, err := models.GetUserByIdD(uid)
-		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err})
-			return
-		}
 		// delete foundProduct.Image
 		client, err := storage.NewClient(ctx, option.WithCredentialsFile("ezcom-eaa21-firebase-adminsdk-9zpt0-d8e4765278.json"))
 		if err != nil {
@@ -372,6 +370,18 @@ func UpdateUser(c *gin.Context) {
 			return
 		}
 		user.File = foundUser.File
+	}
+	if user.Password == "" {
+		user.Password = foundUser.Password
+	} else {
+		// hash password
+		hash, err := bcrypt.GenerateFromPassword([]byte(user.Password), 10)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to hash password"})
+			return
+		}
+		user.Password = string(hash)
+
 	}
 	if err := c.Bind(&user); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})

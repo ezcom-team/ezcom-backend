@@ -614,9 +614,148 @@ func UpdateProduct(c *gin.Context) {
 			return
 		}
 		c.JSON(http.StatusCreated, result.UpsertedID)
-	}
+	} else if product.Type == "keyboard" {
+		var specs models.KeyBoardSpecs
+		specs.Form_Factor = c.PostForm("form_factor")
+		specs.PCB = c.PostForm("PCB")
+		specs.RGB = c.PostForm("RGB")
+		specs.Switches = c.PostForm("switches")
+		specs.Length = c.PostForm("length")
+		specs.Weight = c.PostForm("weight")
+		specs.Height = c.PostForm("height")
+		specs.Width = c.PostForm("width")
 
-	c.Status(http.StatusOK)
+		update := bson.M{
+			"$set": specs, // ใช้ struct ที่ได้รับเป็นค่าในการอัปเดตทุกฟิลด์
+		}
+		collection = db.GetSpecs_Collection()
+		specID, err := primitive.ObjectIDFromHex(product.Specs)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid spec ID"})
+			return
+		}
+		result, err := collection.UpdateOne(ctx, bson.M{"_id": specID}, update)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update specs"})
+			return
+		}
+		c.JSON(http.StatusCreated, result.UpsertedID)
+	} else if product.Type == "headset" {
+		var specs models.HeadsetSpecs
+		specs.Headset_Type = c.PostForm("headset_type")
+		specs.Cable_Length = c.PostForm("cable_length")
+		specs.Connection = c.PostForm("connection")
+		specs.Microphone = c.PostForm("microphone")
+		specs.Noise_Cancelling = c.PostForm("noise_cancelling")
+		specs.Weight = c.PostForm("weight")
+
+		update := bson.M{
+			"$set": specs, // ใช้ struct ที่ได้รับเป็นค่าในการอัปเดตทุกฟิลด์
+		}
+		collection = db.GetSpecs_Collection()
+		specID, err := primitive.ObjectIDFromHex(product.Specs)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid spec ID"})
+			return
+		}
+		result, err := collection.UpdateOne(ctx, bson.M{"_id": specID}, update)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update specs"})
+			return
+		}
+		c.JSON(http.StatusCreated, result.UpsertedID)
+	} else if product.Type == "mousePad" {
+		var specs models.MousePad
+		specs.Height = c.PostForm("height")
+		specs.Thickness = c.PostForm("thickness")
+		specs.Material = c.PostForm("material")
+		specs.Length = c.PostForm("length")
+		specs.Stitched_edges = c.PostForm("stitched_edges")
+		specs.Glide = c.PostForm("glide")
+		update := bson.M{
+			"$set": specs, // ใช้ struct ที่ได้รับเป็นค่าในการอัปเดตทุกฟิลด์
+		}
+		collection = db.GetSpecs_Collection()
+		specID, err := primitive.ObjectIDFromHex(product.Specs)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid spec ID"})
+			return
+		}
+		result, err := collection.UpdateOne(ctx, bson.M{"_id": specID}, update)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update specs"})
+			return
+		}
+		c.JSON(http.StatusCreated, result.UpsertedID)
+	} else if product.Type == "GPU" {
+		var specs models.GPU
+		specs.NVIDIA_CUDA_Cores = c.PostForm("nvidia_cuda_cores")
+		specs.Memory_Size = c.PostForm("memory_size")
+		specs.Boost_Clock = c.PostForm("boost_clock")
+		specs.Memory_Type = c.PostForm("memory_type")
+		update := bson.M{
+			"$set": specs, // ใช้ struct ที่ได้รับเป็นค่าในการอัปเดตทุกฟิลด์
+		}
+		collection = db.GetSpecs_Collection()
+		specID, err := primitive.ObjectIDFromHex(product.Specs)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid spec ID"})
+			return
+		}
+		result, err := collection.UpdateOne(ctx, bson.M{"_id": specID}, update)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update specs"})
+			return
+		}
+		c.JSON(http.StatusCreated, result.UpsertedID)
+	} else if product.Type == "CPU" {
+		var specs models.CPU
+		specs.Socket = c.PostForm("socket")
+		specs.Threads = c.PostForm("threads")
+		specs.Core_Speed_Base = c.PostForm("core_speed_base")
+		specs.Cores = c.PostForm("cores")
+		specs.TDP = c.PostForm("TDP")
+		specs.Core_Speed_Boost = c.PostForm("core_speed_boost")
+		update := bson.M{
+			"$set": specs, // ใช้ struct ที่ได้รับเป็นค่าในการอัปเดตทุกฟิลด์
+		}
+		collection = db.GetSpecs_Collection()
+		specID, err := primitive.ObjectIDFromHex(product.Specs)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid spec ID"})
+			return
+		}
+		result, err := collection.UpdateOne(ctx, bson.M{"_id": specID}, update)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update specs"})
+			return
+		}
+		c.JSON(http.StatusCreated, result.UpsertedID)
+	} else if product.Type == "monitor" {
+		var specs models.Monitor
+		specs.Size = c.PostForm("size")
+		specs.Aspect_Ratio = c.PostForm("aspect_ratio")
+		specs.G_Sync = c.PostForm("g_sync")
+		specs.Panel_Tech = c.PostForm("panel_tech")
+		specs.Resolution = c.PostForm("resolution")
+		specs.Refresh_Rate = c.PostForm("refresh_rate")
+		specs.FreeSync = c.PostForm("free_sync")
+		update := bson.M{
+			"$set": specs, // ใช้ struct ที่ได้รับเป็นค่าในการอัปเดตทุกฟิลด์
+		}
+		collection = db.GetSpecs_Collection()
+		specID, err := primitive.ObjectIDFromHex(product.Specs)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid spec ID"})
+			return
+		}
+		result, err := collection.UpdateOne(ctx, bson.M{"_id": specID}, update)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update specs"})
+			return
+		}
+		c.JSON(http.StatusCreated, result.UpsertedID)
+	}
 }
 
 // DeleteProduct deletes a product by its ID
