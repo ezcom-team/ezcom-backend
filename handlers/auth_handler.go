@@ -29,10 +29,10 @@ func Singup(c *gin.Context) {
 	defer cancel()
 	// bind request.body with user
 	var user models.User
-	if err := c.ShouldBind(&user); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
+	// if err := c.ShouldBind(&user); err != nil {
+	// 	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	// 	return
+	// }
 
 	user.Name = c.PostForm("name")
 	user.Email = c.PostForm("email")
