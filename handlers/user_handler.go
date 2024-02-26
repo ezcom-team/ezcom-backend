@@ -292,7 +292,7 @@ func UpdateUser(c *gin.Context) {
 
 	// store file
 	updataImage := true
-	file, err := c.FormFile("image")
+	file, err := c.FormFile("file")
 	if err != nil {
 		updataImage = false
 	}
