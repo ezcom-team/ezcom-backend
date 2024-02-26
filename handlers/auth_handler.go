@@ -93,6 +93,8 @@ func Singup(c *gin.Context) {
 		}
 
 		user.File = "https://firebasestorage.googleapis.com/v0/b/ezcom-eaa21.appspot.com/o/" + imagePath + "?alt=media"
+	} else {
+		user.File = "https://github.com/identicons/sumetsm.png"
 	}
 	// create the user
 	collection = db.GetUser_Collection()
