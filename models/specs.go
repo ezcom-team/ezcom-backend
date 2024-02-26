@@ -39,7 +39,7 @@ type GPU struct {
 	Memory_Type       string `bson:"memory_type"`
 }
 
-type Mousepad struct {
+type MousePad struct {
 	Height         string `bson:"height"`
 	Thickness      string `bson:"thickness"`
 	Material       string `bson:"material"`
@@ -61,7 +61,7 @@ type Monitor struct {
 	Aspect_Ratio string `bson:"aspect_ratio"`
 	G_Sync       string `bson:"g_sync"`
 	Panel_Tech   string `bson:"panel_tech"`
-	Resolution   string `bson:"Resolution"`
+	Resolution   string `bson:"resolution"`
 	Refresh_Rate string `bson:"refresh_rate"`
 	FreeSync     string `bson:"free_sync"`
 }

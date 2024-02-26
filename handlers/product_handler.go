@@ -163,6 +163,101 @@ func CreateProduct(c *gin.Context) {
 			return
 		}
 		c.JSON(http.StatusCreated, result.InsertedID)
+	} else if product.Type == "mousePad" {
+		var specs models.MousePad
+		specs.Height = c.PostForm("height")
+		specs.Thickness = c.PostForm("thickness")
+		specs.Material = c.PostForm("material")
+		specs.Length = c.PostForm("length")
+		specs.Stitched_edges = c.PostForm("stitched_edges")
+		specs.Glide = c.PostForm("glide")
+		// store product in database
+		var specsCollection = db.GetSpecs_Collection()
+		specsResult, err := specsCollection.InsertOne(context.Background(), specs)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create specs"})
+			return
+		}
+		product.Specs = specsResult.InsertedID.(primitive.ObjectID).Hex()
+		c.JSON(http.StatusCreated, specsResult.InsertedID)
+		var collection = db.GetProcuct_Collection()
+		result, err := collection.InsertOne(context.Background(), product)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create product"})
+			return
+		}
+		c.JSON(http.StatusCreated, result.InsertedID)
+	} else if product.Type == "GPU" {
+		var specs models.GPU
+		specs.NVIDIA_CUDA_Cores = c.PostForm("nvidia_cuda_cores")
+		specs.Memory_Size = c.PostForm("memory_size")
+		specs.Boost_Clock = c.PostForm("boost_clock")
+		specs.Memory_Type = c.PostForm("memory_type")
+		// store product in database
+		var specsCollection = db.GetSpecs_Collection()
+		specsResult, err := specsCollection.InsertOne(context.Background(), specs)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create specs"})
+			return
+		}
+		product.Specs = specsResult.InsertedID.(primitive.ObjectID).Hex()
+		c.JSON(http.StatusCreated, specsResult.InsertedID)
+		var collection = db.GetProcuct_Collection()
+		result, err := collection.InsertOne(context.Background(), product)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create product"})
+			return
+		}
+		c.JSON(http.StatusCreated, result.InsertedID)
+	} else if product.Type == "CPU" {
+		var specs models.CPU
+		specs.Socket = c.PostForm("socket")
+		specs.Threads = c.PostForm("threads")
+		specs.Core_Speed_Base = c.PostForm("core_speed_base")
+		specs.Cores = c.PostForm("cores")
+		specs.TDP = c.PostForm("TDP")
+		specs.Core_Speed_Boost = c.PostForm("core_speed_boost")
+		// store product in database
+		var specsCollection = db.GetSpecs_Collection()
+		specsResult, err := specsCollection.InsertOne(context.Background(), specs)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create specs"})
+			return
+		}
+		product.Specs = specsResult.InsertedID.(primitive.ObjectID).Hex()
+		c.JSON(http.StatusCreated, specsResult.InsertedID)
+		var collection = db.GetProcuct_Collection()
+		result, err := collection.InsertOne(context.Background(), product)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create product"})
+			return
+		}
+		c.JSON(http.StatusCreated, result.InsertedID)
+	} else if product.Type == "monitor" {
+		var specs models.Monitor
+		specs.Size = c.PostForm("size")
+		specs.Aspect_Ratio = c.PostForm("aspect_ratio")
+		specs.G_Sync = c.PostForm("g_sync")
+		specs.Panel_Tech = c.PostForm("panel_tech")
+		specs.Resolution = c.PostForm("resolution")
+		specs.Refresh_Rate = c.PostForm("refresh_rate")
+		specs.FreeSync = c.PostForm("free_sync")
+		// store product in database
+		var specsCollection = db.GetSpecs_Collection()
+		specsResult, err := specsCollection.InsertOne(context.Background(), specs)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create specs"})
+			return
+		}
+		product.Specs = specsResult.InsertedID.(primitive.ObjectID).Hex()
+		c.JSON(http.StatusCreated, specsResult.InsertedID)
+		var collection = db.GetProcuct_Collection()
+		result, err := collection.InsertOne(context.Background(), product)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create product"})
+			return
+		}
+		c.JSON(http.StatusCreated, result.InsertedID)
 	}
 
 }
