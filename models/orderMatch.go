@@ -10,8 +10,10 @@ type MatchedOrder struct {
 	ID           primitive.ObjectID `bson:"_id,omitempty"`
 	Buyer_id     string             `bson:"buyer_id"`
 	BuyerName    string             `bson:"buyerName"`
+	Buyer_img    string             `bson:"buyer_img"`
 	Seller_id    string             `bson:"seller_id"`
 	SellerName   string             `bson:"sellerName"`
+	Seller_img   string             `bson:"seller_img"`
 	Price        float64            `bson:"price"`
 	Product_id   string             `bson:"product_id"`
 	Product_name string             `bson:"product_name"`

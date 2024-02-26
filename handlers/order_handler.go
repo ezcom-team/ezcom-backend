@@ -78,8 +78,10 @@ func CreateSellOrder(c *gin.Context) {
 		matchedOrder.Product_name = productFound.Name
 		matchedOrder.Buyer_id = buyOrder.Buyer_id
 		matchedOrder.BuyerName = buyOrder.Buyer_name
+		matchedOrder.Buyer_img = buyOrder.Buyer_img
 		matchedOrder.Seller_id = userObj.ID.Hex()
 		matchedOrder.SellerName = userObj.Name
+		matchedOrder.Seller_img = userObj.File
 		matchedOrder.Color = sellOrder.Color
 		matchedOrder.Condition = sellOrder.Condition
 		matchedOrder.Price = sellOrder.Price
@@ -110,6 +112,7 @@ func CreateSellOrder(c *gin.Context) {
 		sellOrder.Seller_id = userObj.ID.Hex()
 		sellOrder.CreatedAt = time.Now()
 		sellOrder.Seller_name = userObj.Name
+		sellOrder.Seller_img = userObj.File
 		sellOrder.Product_img = productFound.Image
 		sellOrder.Product_name = productFound.Name
 		//สร้างข้อมูลใน DB
@@ -198,8 +201,10 @@ func CreateBuyOrder(c *gin.Context) {
 		matchedOrder.Product_img = productFound.Image
 		matchedOrder.Product_name = productFound.Name
 		matchedOrder.Buyer_id = userObj.ID.Hex()
+		matchedOrder.Buyer_img = userObj.File
 		matchedOrder.BuyerName = userObj.Name
 		matchedOrder.Seller_id = sellOrder.Seller_id
+		matchedOrder.Seller_img = sellOrder.Seller_img
 		matchedOrder.SellerName = sellOrder.Seller_name
 		matchedOrder.Color = sellOrder.Color
 		matchedOrder.Condition = sellOrder.Condition
@@ -240,6 +245,7 @@ func CreateBuyOrder(c *gin.Context) {
 		buyOrder.Product_name = productFound.Name
 		buyOrder.Buyer_id = userObj.ID.Hex()
 		buyOrder.Buyer_name = userObj.Name
+		buyOrder.Buyer_img = userObj.File
 		buyOrder.CreatedAt = time.Now()
 		collection = db.GetBuyOrder_Collection()
 		result, err := collection.InsertOne(context.Background(), buyOrder)
