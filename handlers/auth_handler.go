@@ -24,15 +24,9 @@ type RequestBody struct {
 }
 
 func Singup(c *gin.Context) {
-	// initial ctx
 	ctx, cancel := context.WithTimeout(context.Background(), 1000*time.Second)
 	defer cancel()
-	// bind request.body with user
 	var user models.User
-	// if err := c.ShouldBind(&user); err != nil {
-	// 	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-	// 	return
-	// }
 
 	user.Name = c.PostForm("name")
 	user.Email = c.PostForm("email")
@@ -43,7 +37,6 @@ func Singup(c *gin.Context) {
 
 	var haveUser models.User
 	collection := db.GetUser_Collection()
-	// ค้นหาผู้ใช้ที่มี email ตามที่ต้องการ
 	err := collection.FindOne(ctx, bson.M{"email": user.Email}).Decode(&haveUser)
 	if err == mongo.ErrNoDocuments {
 		fmt.Println("ไม่พบผู้ใช้ที่มี email นี้ในฐานข้อมูล")
@@ -55,10 +48,6 @@ func Singup(c *gin.Context) {
 		return
 	}
 
-	// if err := c.BindJSON(&user); err != nil {
-	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to read body"})
-	// 	return
-	// }
 	// hash password
 	hash, err := bcrypt.GenerateFromPassword([]byte(user.Password), 10)
 	if err != nil {
@@ -73,7 +62,6 @@ func Singup(c *gin.Context) {
 	if err != nil {
 		haveFile = false
 	}
-	// file = user.File
 	if haveFile {
 		imagePath := file.Filename
 
