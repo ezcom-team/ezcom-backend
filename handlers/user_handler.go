@@ -282,10 +282,7 @@ func UpdateUser(c *gin.Context) {
 	}
 
 	var user models.User
-	// if err := c.BindJSON(&user); err != nil {
-	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
-	// 	return
-	// }
+
 	user.Email = c.PostForm("email")
 	user.Name = c.PostForm("name")
 	user.Role = c.PostForm("role")
@@ -296,9 +293,9 @@ func UpdateUser(c *gin.Context) {
 	if err != nil {
 		updataImage = false
 	}
-	if file != nil {
-		updataImage = false
-	}
+	// if file != nil {
+	// 	updataImage = false
+	// }
 	if updataImage {
 
 		foundUser, err := models.GetUserByIdD(uid)
@@ -375,6 +372,10 @@ func UpdateUser(c *gin.Context) {
 			return
 		}
 		user.File = foundUser.File
+	}
+	if err := c.Bind(&user); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
+		return
 	}
 
 	update := bson.M{
