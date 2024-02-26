@@ -14,6 +14,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -39,6 +40,20 @@ func Singup(c *gin.Context) {
 	user.Role = c.PostForm("role")
 	fmt.Print("user data => ")
 	fmt.Print(user.Name, user.Email, user.Password, user.Role)
+
+	var haveUser models.User
+	collection := db.GetUser_Collection()
+	// ค้นหาผู้ใช้ที่มี email ตามที่ต้องการ
+	err := collection.FindOne(ctx, bson.M{"email": user.Email}).Decode(&haveUser)
+	if err == mongo.ErrNoDocuments {
+		fmt.Println("ไม่พบผู้ใช้ที่มี email นี้ในฐานข้อมูล")
+	} else if err != nil {
+		log.Fatal(err)
+	} else {
+		fmt.Println("พบผู้ใช้ที่มี email นี้ในฐานข้อมูล")
+		c.JSON(http.StatusBadRequest, gin.H{"error": "พบผู้ใช้ที่มี email นี้ในฐานข้อมูล"})
+		return
+	}
 
 	// if err := c.BindJSON(&user); err != nil {
 	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to read body"})
@@ -92,7 +107,7 @@ func Singup(c *gin.Context) {
 		user.File = "https://firebasestorage.googleapis.com/v0/b/ezcom-eaa21.appspot.com/o/" + imagePath + "?alt=media"
 	}
 	// create the user
-	collection := db.GetUser_Collection()
+	collection = db.GetUser_Collection()
 	result, err := collection.InsertOne(ctx, user)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Can't create user"})
