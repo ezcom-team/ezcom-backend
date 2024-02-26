@@ -11,6 +11,7 @@ type MouseSpecs struct {
 	Shape        string `bson:"shape"`
 	Height       string `bson:"height"`
 	Width        string `bson:"width"`
+	DPI          string `bson:"dpi"`
 }
 type KeyBoardSpecs struct {
 	Form_Factor string `bson:"form_factor"`
