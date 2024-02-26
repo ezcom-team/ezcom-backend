@@ -5,17 +5,21 @@ import (
 	"context"
 	"ezcom/db"
 	"ezcom/models"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
+	"cloud.google.com/go/storage"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/gridfs"
+	"google.golang.org/api/option"
 )
 
 func CreateUser(c *gin.Context) {
@@ -278,9 +282,99 @@ func UpdateUser(c *gin.Context) {
 	}
 
 	var user models.User
-	if err := c.BindJSON(&user); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
-		return
+	// if err := c.BindJSON(&user); err != nil {
+	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
+	// 	return
+	// }
+	user.Email = c.PostForm("email")
+	user.Name = c.PostForm("name")
+	user.Role = c.PostForm("role")
+
+	// store file
+	updataImage := true
+	file, err := c.FormFile("image")
+	if err != nil {
+		updataImage = false
+	}
+	if file != nil {
+		updataImage = false
+	}
+	if updataImage {
+
+		foundUser, err := models.GetUserByIdD(uid)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err})
+			return
+		}
+		// delete foundProduct.Image
+		client, err := storage.NewClient(ctx, option.WithCredentialsFile("ezcom-eaa21-firebase-adminsdk-9zpt0-d8e4765278.json"))
+		if err != nil {
+			log.Fatalf("Failed to create client: %v", err)
+		}
+		defer client.Close()
+
+		// ชื่อของ bucket ที่เก็บไฟล์
+		bucketName := "ezcom-eaa21.appspot.com"
+
+		// ชื่อของไฟล์ที่ต้องการลบ
+
+		// Example string
+		path := foundUser.File
+
+		// Split the string using "/"
+		parts := strings.Split(path, "/")
+
+		// Print the last element
+		lastIndex := len(parts) - 1
+		parts1 := strings.Split(parts[lastIndex], "?")
+		fmt.Println(parts1[0])
+		fileName := parts1[0]
+
+		// ลบไฟล์
+		err = client.Bucket(bucketName).Object(fileName).Delete(ctx)
+		if err != nil {
+			log.Fatalf("Failed to delete object: %v", err)
+		}
+
+		fmt.Println("Object deleted successfully")
+		imagePath := file.Filename
+
+		bucket := "ezcom-eaa21.appspot.com"
+
+		wc := db.Storage.Bucket(bucket).Object(imagePath).NewWriter(context.Background())
+		src, err := file.Open()
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
+		defer src.Close()
+
+		_, err = io.Copy(wc, src)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
+
+		if err := wc.Close(); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error": "Failed to close the file writer",
+			})
+			return
+		}
+
+		user.File = "https://firebasestorage.googleapis.com/v0/b/ezcom-eaa21.appspot.com/o/" + imagePath + "?alt=media"
+		fmt.Print("product image : ", user.File)
+	} else {
+		foundUser, err := models.GetUserByIdD(uid)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err})
+			return
+		}
+		user.File = foundUser.File
 	}
 
 	update := bson.M{
@@ -292,7 +386,6 @@ func UpdateUser(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update product"})
 		return
 	}
-
 	c.Status(http.StatusOK)
 }
 
