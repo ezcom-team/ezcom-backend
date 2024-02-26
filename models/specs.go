@@ -17,7 +17,7 @@ type KeyBoardSpecs struct {
 	Form_Factor string `bson:"form_factor"`
 	PCB         string `bson:"PCB"`
 	Height      string `bson:"height"`
-	Length      string `bson:"legth"`
+	Length      string `bson:"length"`
 	Switches    string `bson:"Switches"`
 	RGB         string `bson:"RGB"`
 	Width       string `bson:"width"`

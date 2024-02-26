@@ -599,6 +599,7 @@ func UpdateProduct(c *gin.Context) {
 		specs.Shape = c.PostForm("shape")
 		specs.Height = c.PostForm("height")
 		specs.Width = c.PostForm("width") // store product in database
+		specs.DPI = c.PostForm("dpi")     // store product in database
 		update := bson.M{
 			"$set": specs, // ใช้ struct ที่ได้รับเป็นค่าในการอัปเดตทุกฟิลด์
 		}
