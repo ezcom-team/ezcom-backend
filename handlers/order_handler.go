@@ -538,18 +538,14 @@ func UpdataMatchedOrderStatus(c *gin.Context) {
 func UpdataMatchedOrderRecived(c *gin.Context) {
 	// get user from body
 	var body struct {
-		OrderID string `json:"orderID"`
+		OrderID primitive.ObjectID `json:"orderID"`
 	}
 
-	objID, err := primitive.ObjectIDFromHex(body.OrderID)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid product ID"})
-		return
-	}
+	objID := body.OrderID
 
 	collection := db.GetMatchOrder_Collection()
 	var found models.MatchedOrder
-	err = collection.FindOne(context.Background(), bson.M{"_id": objID}).Decode(&found)
+	err := collection.FindOne(context.Background(), bson.M{"_id": objID}).Decode(&found)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Don't have Matchedorder in database"})
 		return
