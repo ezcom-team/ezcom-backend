@@ -570,7 +570,7 @@ func UpdataMatchedOrderRecived(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid seller ID"})
 		return
 	}
-	err = userCollection.FindOne(context.Background(), bson.M{"_id": objID}).Decode(&seller)
+	err = userCollection.FindOne(context.Background(), bson.M{"_id": sellerObjID}).Decode(&seller)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Don't have selleruser in database"})
 		return
@@ -580,7 +580,7 @@ func UpdataMatchedOrderRecived(c *gin.Context) {
 		"point": prevPoint,
 	}
 
-	_, err = userCollection.UpdateOne(context.Background(), bson.M{"_id": sellerObjID}, update)
+	_, err = userCollection.UpdateOne(context.Background(), bson.M{"_id": objID}, update)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update point"})
 		return
