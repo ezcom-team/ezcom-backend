@@ -580,7 +580,7 @@ func UpdataMatchedOrderRecived(c *gin.Context) {
 		"point": prevPoint,
 	}
 
-	_, err = userCollection.UpdateOne(context.Background(), bson.M{"_id": objID}, update)
+	_, err = userCollection.UpdateOne(context.Background(), bson.M{"_id": sellerObjID}, update)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update point"})
 		return
