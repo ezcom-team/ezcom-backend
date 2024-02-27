@@ -31,10 +31,10 @@ func Setup(router *gin.Engine) {
 	}
 	userGroup := router.Group("/user")
 	{
-		userGroup.GET("/user",middleware.RequireAuth,) // Profile
-		userGroup.GET("/users",middleware.RequireAuth,handlers.GetUsers)
-		userGroup.PUT("/:id",middleware.RequireAuth,handlers.UpdateUser)
-		userGroup.DELETE("/:id",middleware.RequireAuth,handlers.DeleteUser)
+		userGroup.GET("/user", middleware.RequireAuth, handlers.GetUserProfile)
+		userGroup.GET("/users", middleware.RequireAuth, handlers.GetUsers)
+		userGroup.PUT("/:id", middleware.RequireAuth, handlers.UpdateUser)
+		userGroup.DELETE("/:id", middleware.RequireAuth, handlers.DeleteUser)
 	}
 	orderGroup := router.Group("/order")
 	{
@@ -43,10 +43,12 @@ func Setup(router *gin.Engine) {
 		orderGroup.GET("/sells", middleware.RequireAuth, handlers.GetSellOrders)           // ควบรวม
 		orderGroup.GET("/sells/:pid", middleware.RequireAuth, handlers.GetSellOrdersByPID) // ควบรวม
 		orderGroup.POST("/buy", middleware.RequireAuth, handlers.CreateBuyOrder)
-		orderGroup.GET("/buy", middleware.RequireAuth, handlers.GetBuyOrdersByUID)       // ควบรวม
-		orderGroup.GET("/buys", middleware.RequireAuth, handlers.GetBuyOrders)           // ควบรวม
-		orderGroup.GET("/buys/:pid", middleware.RequireAuth, handlers.GetBuyOrdersByPID) // ควบรวม
-		orderGroup.GET("/matched-order", middleware.RequireAuth, handlers.GetMatchedOrder) // ควบรวม
+		orderGroup.GET("/buy", middleware.RequireAuth, handlers.GetBuyOrdersByUID)                           // ควบรวม
+		orderGroup.GET("/buys", middleware.RequireAuth, handlers.GetBuyOrders)                               // ควบรวม
+		orderGroup.GET("/buys/:pid", middleware.RequireAuth, handlers.GetBuyOrdersByPID)                     // ควบรวม
+		orderGroup.GET("/matched-order", middleware.RequireAuth, handlers.GetMatchedOrder)                   // ควบรวม
+		orderGroup.PUT("/matched-order/status", middleware.RequireAuth, handlers.UpdataMatchedOrderStatus)   // ควบรวม
+		orderGroup.PUT("/matched-order/recived", middleware.RequireAuth, handlers.UpdataMatchedOrderRecived) // ควบรวม
 	}
 	specsGroup := router.Group("/specs")
 	{

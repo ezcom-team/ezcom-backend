@@ -23,4 +23,5 @@ type MatchedOrder struct {
 	Status       string             `bson:"status"`
 	CreatedAt    time.Time          `bson:"createAt"`
 	Verify       string             `bson:"verify"`
+	Received     string             `bson:"received"`
 }

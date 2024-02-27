@@ -11,6 +11,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -88,6 +89,7 @@ func CreateSellOrder(c *gin.Context) {
 		matchedOrder.Product_id = sellOrder.Product_id
 		matchedOrder.Verify = buyOrder.Verify
 		matchedOrder.Status = "prepare"
+		matchedOrder.Received = "no"
 		matchedOrder.CreatedAt = time.Now()
 		collection = db.GetMatchOrder_Collection()
 		result, err := collection.InsertOne(context.Background(), matchedOrder)
@@ -210,7 +212,9 @@ func CreateBuyOrder(c *gin.Context) {
 		matchedOrder.Condition = sellOrder.Condition
 		matchedOrder.Price = sellOrder.Price
 		matchedOrder.Product_id = sellOrder.Product_id
+		matchedOrder.Status = "prepare"
 		matchedOrder.Verify = buyOrder.Verify
+		matchedOrder.Received = "no"
 		matchedOrder.CreatedAt = time.Now()
 		collection = db.GetMatchOrder_Collection()
 		result, err := collection.InsertOne(context.Background(), matchedOrder)
@@ -503,4 +507,90 @@ func GetMatchedOrder(c *gin.Context) {
 
 	// Return filtered users as JSON
 	c.JSON(http.StatusOK, matchedOrders)
+}
+
+func UpdataMatchedOrderStatus(c *gin.Context) {
+	// get user from body
+	var body struct {
+		Status  string `json:"status"`
+		OrderID string `json:"orderID"`
+	}
+
+	objID, err := primitive.ObjectIDFromHex(body.OrderID)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid product ID"})
+		return
+	}
+	collection := db.GetMatchOrder_Collection()
+
+	update := bson.M{
+		"status": body.Status,
+	}
+
+	result, err := collection.UpdateOne(context.Background(), bson.M{"_id": objID}, update)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update status"})
+		return
+	}
+	c.JSON(http.StatusCreated, result.UpsertedID)
+
+}
+func UpdataMatchedOrderRecived(c *gin.Context) {
+	// get user from body
+	var body struct {
+		OrderID string `json:"orderID"`
+	}
+
+	objID, err := primitive.ObjectIDFromHex(body.OrderID)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid product ID"})
+		return
+	}
+
+	collection := db.GetMatchOrder_Collection()
+	var found models.MatchedOrder
+	err = collection.FindOne(context.Background(), bson.M{"_id": objID}).Decode(&found)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Don't have Matchedorder in database"})
+		return
+	}
+	if found.Status != "done" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "recived fail cause status not done"})
+		return
+	}
+
+	var seller models.User
+	userCollection := db.GetUser_Collection()
+	sellerObjID, err := primitive.ObjectIDFromHex(found.Seller_id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid seller ID"})
+		return
+	}
+	err = userCollection.FindOne(context.Background(), bson.M{"_id": objID}).Decode(&seller)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Don't have selleruser in database"})
+		return
+	}
+	prevPoint := seller.Point + found.Price
+	update := bson.M{
+		"point": prevPoint,
+	}
+
+	_, err = userCollection.UpdateOne(context.Background(), bson.M{"_id": sellerObjID}, update)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update point"})
+		return
+	}
+
+	update = bson.M{
+		"received": "yes",
+	}
+
+	result, err := collection.UpdateOne(context.Background(), bson.M{"_id": objID}, update)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update recived"})
+		return
+	}
+	c.JSON(http.StatusCreated, result.UpsertedID)
+
 }

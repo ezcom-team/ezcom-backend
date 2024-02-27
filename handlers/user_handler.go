@@ -422,3 +422,35 @@ func DeleteUser(c *gin.Context) {
 
 	c.Status(http.StatusNoContent)
 }
+
+func GetUserProfile(c *gin.Context) {
+	// init ctx
+	ctx, cancel := context.WithTimeout(context.Background(), 1000*time.Second)
+	defer cancel()
+	//ดึงค่า user จากใน context
+	user, exists := c.Get("user")
+	if !exists {
+		// ไม่พบค่า "user" ใน context
+		c.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized"})
+		return
+	}
+	// แปลง user เป็น models.User
+	userObj, ok := user.(models.User)
+	if !ok {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Internal Server Error"})
+		return
+	}
+
+	// look up form db
+	collection := db.GetUser_Collection()
+	filter := bson.M{"email": userObj.Email}
+	var found models.User
+	err := collection.FindOne(ctx, filter).Decode(&found)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "no user in database"})
+		return
+	}
+
+	// sent tokenString
+	c.JSON(http.StatusOK, found)
+}
