@@ -589,7 +589,9 @@ func UpdataMatchedOrderRecived(c *gin.Context) {
 	}
 
 	update = bson.M{
-		"received": "yes",
+		"$set": bson.M{
+			"received": "yes",
+		},
 	}
 
 	result, err := collection.UpdateOne(context.Background(), bson.M{"_id": objID}, update)
