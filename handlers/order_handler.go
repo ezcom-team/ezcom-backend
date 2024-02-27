@@ -577,7 +577,9 @@ func UpdataMatchedOrderRecived(c *gin.Context) {
 	}
 	prevPoint := seller.Point + found.Price
 	update := bson.M{
-		"point": prevPoint,
+		"$set": bson.M{
+			"point": prevPoint,
+		},
 	}
 
 	_, err = userCollection.UpdateOne(context.Background(), bson.M{"_id": sellerObjID}, update)
