@@ -43,12 +43,12 @@ func Setup(router *gin.Engine) {
 		orderGroup.GET("/sells", middleware.RequireAuth, handlers.GetSellOrders)           // ควบรวม
 		orderGroup.GET("/sells/:pid", middleware.RequireAuth, handlers.GetSellOrdersByPID) // ควบรวม
 		orderGroup.POST("/buy", middleware.RequireAuth, handlers.CreateBuyOrder)
-		orderGroup.GET("/buy", middleware.RequireAuth, handlers.GetBuyOrdersByUID)                           // ควบรวม
-		orderGroup.GET("/buys", middleware.RequireAuth, handlers.GetBuyOrders)                               // ควบรวม
-		orderGroup.GET("/buys/:pid", middleware.RequireAuth, handlers.GetBuyOrdersByPID)                     // ควบรวม
-		orderGroup.GET("/matched-order", middleware.RequireAuth, handlers.GetMatchedOrder)                   // ควบรวม
-		orderGroup.PUT("/matched-order/status", middleware.RequireAuth, handlers.UpdataMatchedOrderStatus)   // ควบรวม
-		orderGroup.PUT("/matched-order/recived", middleware.RequireAuth, handlers.UpdataMatchedOrderRecived) // ควบรวม
+		orderGroup.GET("/buy", middleware.RequireAuth, handlers.GetBuyOrdersByUID)                            // ควบรวม
+		orderGroup.GET("/buys", middleware.RequireAuth, handlers.GetBuyOrders)                                // ควบรวม
+		orderGroup.GET("/buys/:pid", middleware.RequireAuth, handlers.GetBuyOrdersByPID)                      // ควบรวม
+		orderGroup.GET("/matched-order", middleware.RequireAuth, handlers.GetMatchedOrder)                    // ควบรวม
+		orderGroup.PUT("/matched-order/status", middleware.RequireAuth, handlers.UpdataMatchedOrderStatus)    // ควบรวม
+		orderGroup.PUT("/matched-order/received", middleware.RequireAuth, handlers.UpdataMatchedOrderRecived) // ควบรวม
 	}
 	specsGroup := router.Group("/specs")
 	{
