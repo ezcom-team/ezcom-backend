@@ -540,6 +540,10 @@ func UpdataMatchedOrderRecived(c *gin.Context) {
 	var body struct {
 		OrderID string `json:"orderID"`
 	}
+	if err := c.BindJSON(&body); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "what the fuck"})
+		return
+	}
 
 	objID, err := primitive.ObjectIDFromHex(body.OrderID)
 	if err != nil {
