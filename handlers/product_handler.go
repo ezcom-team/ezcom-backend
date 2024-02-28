@@ -47,6 +47,7 @@ func CreateProduct(c *gin.Context) {
 	quantityStr := c.PostForm("quantity")
 	quantityInt, _ := strconv.ParseInt(quantityStr, 10, 64)
 	product.Quantity = int64(quantityInt)
+	product.ID = primitive.NewObjectID()
 	// store file
 	file, err := c.FormFile("image")
 	if err != nil {
