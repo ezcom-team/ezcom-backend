@@ -291,7 +291,7 @@ func GetProducts(c *gin.Context) {
 
 	// "Failed to retrieve products"
 	// cursor, err := collection.Find(ctx, bson.M{})
-	cursor, err := collection.Find(ctx, bson.M{}, options.Find().SetSort(bson.D{{Key: "createdAt", Value: 1}}))
+	cursor, err := collection.Find(ctx, bson.M{}, options.Find().SetSort(bson.D{{Key: "createdAt", Value: -1}}))
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
