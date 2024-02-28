@@ -627,6 +627,7 @@ func UpdataMatchedOrderTackingNumber(c *gin.Context) {
 	update := bson.M{
 		"$set": bson.M{
 			"tracking_number": body.Tracking_Number,
+			"status":          "sent",
 		},
 	}
 
