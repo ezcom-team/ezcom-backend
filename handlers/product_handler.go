@@ -18,6 +18,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"google.golang.org/api/option"
 )
 
@@ -85,6 +86,7 @@ func CreateProduct(c *gin.Context) {
 
 	product.Image = "https://firebasestorage.googleapis.com/v0/b/ezcom-eaa21.appspot.com/o/" + imagePath + "?alt=media"
 	// check and set specs
+	product.CreatedAt = time.Now()
 
 	if product.Type == "mouse" {
 		var specs models.MouseSpecs
@@ -273,7 +275,9 @@ func GetProducts(c *gin.Context) {
 	// Find all products in the collection
 
 	// "Failed to retrieve products"
-	cursor, err := collection.Find(ctx, bson.M{})
+	// cursor, err := collection.Find(ctx, bson.M{})
+	cursor, err := collection.Find(ctx, bson.M{}, options.Find().SetSort(bson.D{{Key: "createdAt", Value: -1}}))
+
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
 		return

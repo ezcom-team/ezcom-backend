@@ -2,6 +2,8 @@
 package models
 
 import (
+	"time"
+
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -16,4 +18,5 @@ type Product struct {
 	Type      string             `bson:"type"`
 	Color     []string           `bson:"color"`
 	Specs     string             `bson:"specs"`
+	CreatedAt time.Time          `bson:"createAt"`
 }
