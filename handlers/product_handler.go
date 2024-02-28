@@ -102,6 +102,7 @@ func CreateProduct(c *gin.Context) {
 		specs.Height = c.PostForm("height")
 		specs.DPI = c.PostForm("dpi")
 		specs.PID = product.ID.Hex()
+		specs.Type = product.Type
 		var specsCollection = db.GetSpecs_Collection()
 		specsResult, err := specsCollection.InsertOne(context.Background(), specs)
 		if err != nil {
@@ -128,6 +129,7 @@ func CreateProduct(c *gin.Context) {
 		specs.Height = c.PostForm("height")
 		specs.Width = c.PostForm("width")
 		specs.PID = product.ID.Hex()
+		specs.Type = product.Type
 		// store product in database
 		var specsCollection = db.GetSpecs_Collection()
 		specsResult, err := specsCollection.InsertOne(context.Background(), specs)
@@ -153,6 +155,7 @@ func CreateProduct(c *gin.Context) {
 		specs.Noise_Cancelling = c.PostForm("noise_cancelling")
 		specs.Weight = c.PostForm("weight")
 		specs.PID = product.ID.Hex()
+		specs.Type = product.Type
 		// store product in database
 		var specsCollection = db.GetSpecs_Collection()
 		specsResult, err := specsCollection.InsertOne(context.Background(), specs)
@@ -178,6 +181,7 @@ func CreateProduct(c *gin.Context) {
 		specs.Stitched_edges = c.PostForm("stitched_edges")
 		specs.Glide = c.PostForm("glide")
 		specs.PID = product.ID.Hex()
+		specs.Type = product.Type
 		// store product in database
 		var specsCollection = db.GetSpecs_Collection()
 		specsResult, err := specsCollection.InsertOne(context.Background(), specs)
@@ -201,6 +205,7 @@ func CreateProduct(c *gin.Context) {
 		specs.Boost_Clock = c.PostForm("boost_clock")
 		specs.Memory_Type = c.PostForm("memory_type")
 		specs.PID = product.ID.Hex()
+		specs.Type = product.Type
 		// store product in database
 		var specsCollection = db.GetSpecs_Collection()
 		specsResult, err := specsCollection.InsertOne(context.Background(), specs)
@@ -226,6 +231,7 @@ func CreateProduct(c *gin.Context) {
 		specs.TDP = c.PostForm("TDP")
 		specs.Core_Speed_Boost = c.PostForm("core_speed_boost")
 		specs.PID = product.ID.Hex()
+		specs.Type = product.Type
 		// store product in database
 		var specsCollection = db.GetSpecs_Collection()
 		specsResult, err := specsCollection.InsertOne(context.Background(), specs)
@@ -252,6 +258,7 @@ func CreateProduct(c *gin.Context) {
 		specs.Refresh_Rate = c.PostForm("refresh_rate")
 		specs.FreeSync = c.PostForm("free_sync")
 		specs.PID = product.ID.Hex()
+		specs.Type = product.Type
 		// store product in database
 		var specsCollection = db.GetSpecs_Collection()
 		specsResult, err := specsCollection.InsertOne(context.Background(), specs)
@@ -844,34 +851,201 @@ func DeleteProduct(c *gin.Context) {
 }
 
 func GetSpecs(c *gin.Context) {
+	specType := c.Param("type")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	// Get the MongoDB collection
-	collection := db.GetSpecs_Collection()
-	cursor, err := collection.Find(ctx, bson.M{})
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
-		return
-	}
-	defer cursor.Close(ctx)
-	var specs []interface{}
+	switch specType {
+	case "mouse":
+		var collection = db.GetSpecs_Collection()
+		cursor, err := collection.Find(ctx, bson.M{"type": specType})
 
-	// Iterate through the cursor and decode each product
-	for cursor.Next(ctx) {
-		var spec interface{}
-		if err := cursor.Decode(&spec); err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to decode specs data"})
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err})
 			return
 		}
-		specs = append(specs, spec)
-	}
+		defer cursor.Close(ctx)
+		var products []models.MouseSpecs
 
-	if err := cursor.Err(); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Cursor error"})
-		return
-	}
+		for cursor.Next(ctx) {
+			var product models.MouseSpecs
+			if err := cursor.Decode(&product); err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to decode product data"})
+				return
+			}
+			products = append(products, product)
+		}
 
-	// Return the products as JSON response
-	c.JSON(http.StatusOK, specs)
+		if err := cursor.Err(); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Cursor error"})
+			return
+		}
+
+		// Return the products as JSON response
+		c.JSON(http.StatusOK, products)
+	case "keyboard":
+		var collection = db.GetSpecs_Collection()
+		cursor, err := collection.Find(ctx, bson.M{"type": specType})
+
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+			return
+		}
+		defer cursor.Close(ctx)
+		var products []models.KeyBoardSpecs
+
+		for cursor.Next(ctx) {
+			var product models.KeyBoardSpecs
+			if err := cursor.Decode(&product); err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to decode product data"})
+				return
+			}
+			products = append(products, product)
+		}
+
+		if err := cursor.Err(); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Cursor error"})
+			return
+		}
+
+		// Return the products as JSON response
+		c.JSON(http.StatusOK, products)
+	case "headset":
+		var collection = db.GetSpecs_Collection()
+		cursor, err := collection.Find(ctx, bson.M{"type": specType})
+
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+			return
+		}
+		defer cursor.Close(ctx)
+		var products []models.HeadsetSpecs
+
+		for cursor.Next(ctx) {
+			var product models.HeadsetSpecs
+			if err := cursor.Decode(&product); err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to decode product data"})
+				return
+			}
+			products = append(products, product)
+		}
+
+		if err := cursor.Err(); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Cursor error"})
+			return
+		}
+
+		// Return the products as JSON response
+		c.JSON(http.StatusOK, products)
+	case "mousePad":
+		var collection = db.GetSpecs_Collection()
+		cursor, err := collection.Find(ctx, bson.M{"type": specType})
+
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+			return
+		}
+		defer cursor.Close(ctx)
+		var products []models.MousePad
+
+		for cursor.Next(ctx) {
+			var product models.MousePad
+			if err := cursor.Decode(&product); err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to decode product data"})
+				return
+			}
+			products = append(products, product)
+		}
+
+		if err := cursor.Err(); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Cursor error"})
+			return
+		}
+
+		// Return the products as JSON response
+		c.JSON(http.StatusOK, products)
+	case "GPU":
+		var collection = db.GetSpecs_Collection()
+		cursor, err := collection.Find(ctx, bson.M{"type": specType})
+
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+			return
+		}
+		defer cursor.Close(ctx)
+		var products []models.GPU
+
+		for cursor.Next(ctx) {
+			var product models.GPU
+			if err := cursor.Decode(&product); err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to decode product data"})
+				return
+			}
+			products = append(products, product)
+		}
+
+		if err := cursor.Err(); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Cursor error"})
+			return
+		}
+
+		// Return the products as JSON response
+		c.JSON(http.StatusOK, products)
+	case "CPU":
+		var collection = db.GetSpecs_Collection()
+		cursor, err := collection.Find(ctx, bson.M{"type": specType})
+
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+			return
+		}
+		defer cursor.Close(ctx)
+		var products []models.CPU
+
+		for cursor.Next(ctx) {
+			var product models.CPU
+			if err := cursor.Decode(&product); err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to decode product data"})
+				return
+			}
+			products = append(products, product)
+		}
+
+		if err := cursor.Err(); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Cursor error"})
+			return
+		}
+
+		// Return the products as JSON response
+		c.JSON(http.StatusOK, products)
+	case "monitor":
+		var collection = db.GetSpecs_Collection()
+		cursor, err := collection.Find(ctx, bson.M{"type": specType})
+
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+			return
+		}
+		defer cursor.Close(ctx)
+		var products []models.Monitor
+
+		for cursor.Next(ctx) {
+			var product models.Monitor
+			if err := cursor.Decode(&product); err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to decode product data"})
+				return
+			}
+			products = append(products, product)
+		}
+
+		if err := cursor.Err(); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Cursor error"})
+			return
+		}
+
+		// Return the products as JSON response
+		c.JSON(http.StatusOK, products)
+	default:
+		c.JSON(http.StatusBadRequest, "don't have spec type yet")
+	}
 }
