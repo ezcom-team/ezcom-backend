@@ -89,6 +89,7 @@ func CreateSellOrder(c *gin.Context) {
 		matchedOrder.Product_id = sellOrder.Product_id
 		matchedOrder.Verify = buyOrder.Verify
 		matchedOrder.Status = "prepare"
+		matchedOrder.Tracking_Number = "none"
 		matchedOrder.Received = "no"
 		matchedOrder.CreatedAt = time.Now()
 		collection = db.GetMatchOrder_Collection()
@@ -214,6 +215,7 @@ func CreateBuyOrder(c *gin.Context) {
 		matchedOrder.Product_id = sellOrder.Product_id
 		matchedOrder.Status = "prepare"
 		matchedOrder.Verify = buyOrder.Verify
+		matchedOrder.Tracking_Number = "none"
 		matchedOrder.Received = "no"
 		matchedOrder.CreatedAt = time.Now()
 		collection = db.GetMatchOrder_Collection()
@@ -597,6 +599,40 @@ func UpdataMatchedOrderRecived(c *gin.Context) {
 	result, err := collection.UpdateOne(context.Background(), bson.M{"_id": objID}, update)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update recived"})
+		return
+	}
+	c.JSON(http.StatusCreated, result.UpsertedID)
+
+}
+
+func UpdataMatchedOrderTackingNumber(c *gin.Context) {
+	// get user from body
+	var body struct {
+		OrderID         string `json:"orderID"`
+		Tracking_Number string `json:"tracking_number"`
+	}
+	if err := c.BindJSON(&body); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "what the fuck"})
+		return
+	}
+
+	objID, err := primitive.ObjectIDFromHex(body.OrderID)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid product ID"})
+		return
+	}
+
+	collection := db.GetMatchOrder_Collection()
+
+	update := bson.M{
+		"$set": bson.M{
+			"tracking_number": body.Tracking_Number,
+		},
+	}
+
+	result, err := collection.UpdateOne(context.Background(), bson.M{"_id": objID}, update)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update tracking_number"})
 		return
 	}
 	c.JSON(http.StatusCreated, result.UpsertedID)
