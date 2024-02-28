@@ -101,6 +101,7 @@ func CreateProduct(c *gin.Context) {
 		specs.Width = c.PostForm("width") // store product in database
 		specs.Height = c.PostForm("height")
 		specs.DPI = c.PostForm("dpi")
+		specs.PID = product.ID.Hex()
 		var specsCollection = db.GetSpecs_Collection()
 		specsResult, err := specsCollection.InsertOne(context.Background(), specs)
 		if err != nil {
@@ -126,6 +127,7 @@ func CreateProduct(c *gin.Context) {
 		specs.Weight = c.PostForm("weight")
 		specs.Height = c.PostForm("height")
 		specs.Width = c.PostForm("width")
+		specs.PID = product.ID.Hex()
 		// store product in database
 		var specsCollection = db.GetSpecs_Collection()
 		specsResult, err := specsCollection.InsertOne(context.Background(), specs)
@@ -150,6 +152,7 @@ func CreateProduct(c *gin.Context) {
 		specs.Microphone = c.PostForm("microphone")
 		specs.Noise_Cancelling = c.PostForm("noise_cancelling")
 		specs.Weight = c.PostForm("weight")
+		specs.PID = product.ID.Hex()
 		// store product in database
 		var specsCollection = db.GetSpecs_Collection()
 		specsResult, err := specsCollection.InsertOne(context.Background(), specs)
@@ -174,6 +177,7 @@ func CreateProduct(c *gin.Context) {
 		specs.Length = c.PostForm("length")
 		specs.Stitched_edges = c.PostForm("stitched_edges")
 		specs.Glide = c.PostForm("glide")
+		specs.PID = product.ID.Hex()
 		// store product in database
 		var specsCollection = db.GetSpecs_Collection()
 		specsResult, err := specsCollection.InsertOne(context.Background(), specs)
@@ -196,6 +200,7 @@ func CreateProduct(c *gin.Context) {
 		specs.Memory_Size = c.PostForm("memory_size")
 		specs.Boost_Clock = c.PostForm("boost_clock")
 		specs.Memory_Type = c.PostForm("memory_type")
+		specs.PID = product.ID.Hex()
 		// store product in database
 		var specsCollection = db.GetSpecs_Collection()
 		specsResult, err := specsCollection.InsertOne(context.Background(), specs)
@@ -220,6 +225,7 @@ func CreateProduct(c *gin.Context) {
 		specs.Cores = c.PostForm("cores")
 		specs.TDP = c.PostForm("TDP")
 		specs.Core_Speed_Boost = c.PostForm("core_speed_boost")
+		specs.PID = product.ID.Hex()
 		// store product in database
 		var specsCollection = db.GetSpecs_Collection()
 		specsResult, err := specsCollection.InsertOne(context.Background(), specs)
@@ -245,6 +251,7 @@ func CreateProduct(c *gin.Context) {
 		specs.Resolution = c.PostForm("resolution")
 		specs.Refresh_Rate = c.PostForm("refresh_rate")
 		specs.FreeSync = c.PostForm("free_sync")
+		specs.PID = product.ID.Hex()
 		// store product in database
 		var specsCollection = db.GetSpecs_Collection()
 		specsResult, err := specsCollection.InsertOne(context.Background(), specs)
@@ -834,4 +841,37 @@ func DeleteProduct(c *gin.Context) {
 	}
 
 	c.Status(http.StatusOK)
+}
+
+func GetSpecs(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	// Get the MongoDB collection
+	collection := db.GetSpecs_Collection()
+	cursor, err := collection.Find(ctx, bson.M{})
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		return
+	}
+	defer cursor.Close(ctx)
+	var specs []interface{}
+
+	// Iterate through the cursor and decode each product
+	for cursor.Next(ctx) {
+		var spec interface{}
+		if err := cursor.Decode(&spec); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to decode specs data"})
+			return
+		}
+		specs = append(specs, spec)
+	}
+
+	if err := cursor.Err(); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Cursor error"})
+		return
+	}
+
+	// Return the products as JSON response
+	c.JSON(http.StatusOK, specs)
 }

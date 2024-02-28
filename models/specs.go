@@ -1,6 +1,7 @@
 package models
 
 type MouseSpecs struct {
+	PID       string `bson:"pID"`
 	Sensor       string `bson:"sensor"`
 	ButtonSwitch string `bson:"buttonSwitch"`
 	Connection   string `bson:"connection"`
@@ -14,6 +15,7 @@ type MouseSpecs struct {
 	DPI          string `bson:"dpi"`
 }
 type KeyBoardSpecs struct {
+	PID       string `bson:"pID"`
 	Form_Factor string `bson:"form_factor"`
 	PCB         string `bson:"PCB"`
 	Height      string `bson:"height"`
@@ -25,6 +27,7 @@ type KeyBoardSpecs struct {
 }
 
 type HeadsetSpecs struct {
+	PID       string `bson:"pID"`
 	Headset_Type     string `bson:"headset_type"`
 	Cable_Length     string `bson:"cable_length"`
 	Microphone       string `bson:"microphone"`
@@ -34,6 +37,7 @@ type HeadsetSpecs struct {
 }
 
 type GPU struct {
+	PID       string `bson:"pID"`
 	NVIDIA_CUDA_Cores string `bson:"nvidia_cuda_cores"`
 	Memory_Size       string `bson:"memory_size"`
 	Boost_Clock       string `bson:"boost_clock"`
@@ -41,6 +45,7 @@ type GPU struct {
 }
 
 type MousePad struct {
+	PID       string `bson:"pID"`
 	Height         string `bson:"height"`
 	Thickness      string `bson:"thickness"`
 	Material       string `bson:"material"`
@@ -50,6 +55,7 @@ type MousePad struct {
 }
 
 type CPU struct {
+	PID       string `bson:"pID"`
 	Socket           string `bson:"socket"`
 	Threads          string `bson:"threads"`
 	Core_Speed_Base  string `bson:"core_speed_base"`
@@ -58,6 +64,7 @@ type CPU struct {
 	Core_Speed_Boost string `bson:"core_speed_boost"`
 }
 type Monitor struct {
+	PID       string `bson:"pID"`
 	Size         string `bson:"size"`
 	Aspect_Ratio string `bson:"aspect_ratio"`
 	G_Sync       string `bson:"g_sync"`
