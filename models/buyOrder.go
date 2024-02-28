@@ -17,6 +17,6 @@ type BuyOrder struct {
 	Product_img  string             `bson:"product_img"`
 	Condition    []string           `bson:"condition" binding:"required"`
 	Color        []string           `bson:"color" binding:"required"`
-	CreatedAt    time.Time          `bson:"createAt"`
+	CreatedAt    time.Time          `bson:"createdAt"`
 	Verify       string             `bson:"verify"`
 }

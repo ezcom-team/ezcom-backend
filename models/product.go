@@ -18,5 +18,5 @@ type Product struct {
 	Type      string             `bson:"type"`
 	Color     []string           `bson:"color"`
 	Specs     string             `bson:"specs"`
-	CreatedAt time.Time          `bson:"createAt"`
+	CreatedAt time.Time          `bson:"createdAt"`
 }

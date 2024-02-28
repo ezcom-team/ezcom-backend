@@ -13,5 +13,5 @@ type ProgressDetail struct {
 	Time_duration   string             `bson:"time_duration"`
 	Status          string             `bson:"status"`
 	Tag_shiping     string             `bson:"tag_shiping"`
-	CreatedAt       time.Time          `bson:"createAt"`
+	CreatedAt       time.Time          `bson:"createdAt"`
 }

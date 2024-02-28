@@ -17,5 +17,5 @@ type SellOrder struct {
 	Product_id   string             `bson:"product_id" binding:"required"`
 	Condition    string             `bson:"condition" binding:"required"`
 	Color        string             `bson:"color" binding:"required"`
-	CreatedAt    time.Time          `bson:"createAt"`
+	CreatedAt    time.Time          `bson:"createdAt"`
 }
