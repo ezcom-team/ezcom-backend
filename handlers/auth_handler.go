@@ -140,7 +140,7 @@ func Login(c *gin.Context) {
 	// Generate a jwt token
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"sub": found.ID,
-		"exp": time.Now().Add(time.Hour * 2).Unix(),
+		"exp": time.Now().Add(time.Hour * 240).Unix(),
 	})
 
 	tokenString, err := token.SignedString([]byte(os.Getenv("SECRET")))
@@ -148,11 +148,7 @@ func Login(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to create token"})
 		return
 	}
-	// set token in cookie
-	// c.SetSameSite(http.SameSiteNoneMode)
-	// c.SetCookie("Authorization", tokenString, 120000, "/", "", true, false)
 
-	// sent tokenString
 	c.JSON(http.StatusOK, gin.H{
 		"user":  found,
 		"token": tokenString,
