@@ -14,5 +14,6 @@ type User struct {
 	Role      string             `bson:"role" binding:"required"`
 	Point     float64            `bson:"point"`
 	File      string             `bson:"file"`
+	Address   string             `bson:"address"`
 	CreatedAt time.Time          `bson:"createdAt"`
 }
