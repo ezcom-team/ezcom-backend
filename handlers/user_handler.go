@@ -289,6 +289,7 @@ func UpdateUser(c *gin.Context) {
 	user.Role = c.PostForm("role")
 	user.Password = c.PostForm("password")
 	user.Address = c.PostForm("address")
+	user.PhoneNumber = c.PostForm("phoneNumber")
 
 	// store file
 	updataImage := true

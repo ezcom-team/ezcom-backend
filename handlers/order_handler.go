@@ -92,6 +92,7 @@ func CreateSellOrder(c *gin.Context) {
 		matchedOrder.Tracking_Number = "none"
 		matchedOrder.Received = "no"
 		matchedOrder.DesAdd = buyOrder.DesAdd
+		matchedOrder.DesPhone = buyOrder.DesPhone
 		matchedOrder.CreatedAt = time.Now()
 		collection = db.GetMatchOrder_Collection()
 		result, err := collection.InsertOne(context.Background(), matchedOrder)
@@ -219,6 +220,7 @@ func CreateBuyOrder(c *gin.Context) {
 		matchedOrder.Tracking_Number = "none"
 		matchedOrder.Received = "no"
 		matchedOrder.DesAdd = userObj.Address
+		matchedOrder.DesPhone = userObj.PhoneNumber
 		matchedOrder.CreatedAt = time.Now()
 		collection = db.GetMatchOrder_Collection()
 		result, err := collection.InsertOne(context.Background(), matchedOrder)
@@ -254,6 +256,7 @@ func CreateBuyOrder(c *gin.Context) {
 		buyOrder.Buyer_id = userObj.ID.Hex()
 		buyOrder.Buyer_name = userObj.Name
 		buyOrder.DesAdd = userObj.Address
+		buyOrder.DesPhone = userObj.PhoneNumber
 		buyOrder.Buyer_img = userObj.File
 		buyOrder.CreatedAt = time.Now()
 		collection = db.GetBuyOrder_Collection()

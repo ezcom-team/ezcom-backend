@@ -33,6 +33,7 @@ func Singup(c *gin.Context) {
 	user.Password = c.PostForm("password")
 	user.Role = c.PostForm("role")
 	user.Address = c.PostForm("address")
+	user.PhoneNumber = c.PostForm("phoneNumber")
 	user.CreatedAt = time.Now()
 	fmt.Print("user data => ")
 	fmt.Print(user.Name, user.Email, user.Password, user.Role)

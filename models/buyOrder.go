@@ -20,4 +20,5 @@ type BuyOrder struct {
 	CreatedAt    time.Time          `bson:"createdAt"`
 	Verify       string             `bson:"verify"`
 	DesAdd       string             `bson:"desAdd"`
+	DesPhone     string             `bson:"desPhone"`
 }
