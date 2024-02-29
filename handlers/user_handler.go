@@ -330,7 +330,7 @@ func UpdateUser(c *gin.Context) {
 		// ลบไฟล์
 		err = client.Bucket(bucketName).Object(fileName).Delete(ctx)
 		if err != nil {
-			log.Fatalf("Failed to delete object: %v", err)
+			fmt.Println("Failed to delete object: ", err)
 		}
 
 		fmt.Println("Object deleted successfully")
