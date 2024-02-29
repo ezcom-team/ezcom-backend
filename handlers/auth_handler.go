@@ -36,7 +36,7 @@ func Singup(c *gin.Context) {
 	user.PhoneNumber = c.PostForm("phoneNumber")
 	user.CreatedAt = time.Now()
 	fmt.Print("user data => ")
-	fmt.Print(user.Name, user.Email, user.Password, user.Role)
+	fmt.Print(user.PhoneNumber,user.Name)
 
 	var haveUser models.User
 	collection := db.GetUser_Collection()
