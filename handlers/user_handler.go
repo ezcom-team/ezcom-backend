@@ -288,6 +288,7 @@ func UpdateUser(c *gin.Context) {
 	user.Name = c.PostForm("name")
 	user.Role = c.PostForm("role")
 	user.Password = c.PostForm("password")
+	user.Address = c.PostForm("address")
 
 	// store file
 	updataImage := true
@@ -383,6 +384,7 @@ func UpdateUser(c *gin.Context) {
 		user.Password = string(hash)
 
 	}
+	user.Point = foundUser.Point
 	if err := c.Bind(&user); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
 		return
