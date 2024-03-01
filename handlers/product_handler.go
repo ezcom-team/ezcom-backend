@@ -504,7 +504,6 @@ func UpdateProduct(c *gin.Context) {
 	product.Type = c.PostForm("type")
 	product.Color = c.PostFormArray("color")
 	product.Specs = c.PostForm("specs")
-	product.CreatedAt = time.Now()
 	// store file
 	updataImage := true
 	file, err := c.FormFile("image")
@@ -592,6 +591,7 @@ func UpdateProduct(c *gin.Context) {
 		}
 		product.Image = foundProduct.Image
 	}
+	product.CreatedAt = foundProduct.CreatedAt
 
 	if err := c.Bind(&product); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "shouldbind error"})
