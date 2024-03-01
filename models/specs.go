@@ -6,7 +6,7 @@ type MouseSpecs struct {
 	Sensor       string `bson:"sensor"`
 	ButtonSwitch string `bson:"buttonSwitch"`
 	Connection   string `bson:"connection"`
-	Length       string `bson:"legth"`
+	Length       string `bson:"length"`
 	Weight       string `bson:"weight"`
 	PollingRate  string `bson:"pollingRate"`
 	ButtonForce  string `bson:"buttonForce"`

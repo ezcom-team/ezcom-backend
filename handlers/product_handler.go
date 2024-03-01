@@ -504,6 +504,7 @@ func UpdateProduct(c *gin.Context) {
 	product.Type = c.PostForm("type")
 	product.Color = c.PostFormArray("color")
 	product.Specs = c.PostForm("specs")
+	product.CreatedAt = time.Now()
 	// store file
 	updataImage := true
 	file, err := c.FormFile("image")
