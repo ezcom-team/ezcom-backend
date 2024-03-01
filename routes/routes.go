@@ -43,14 +43,17 @@ func Setup(router *gin.Engine) {
 		orderGroup.GET("/sell", middleware.RequireAuth, handlers.GetSellOrdersByUID)       // ควบรวม
 		orderGroup.GET("/sells", middleware.RequireAuth, handlers.GetSellOrders)           // ควบรวม
 		orderGroup.GET("/sells/:pid", middleware.RequireAuth, handlers.GetSellOrdersByPID) // ควบรวม
+		orderGroup.DELETE("/:type/:id", middleware.RequireAuth, handlers.DeleteOrder)      // ควบรวม
 		orderGroup.POST("/buy", middleware.RequireAuth, handlers.CreateBuyOrder)
 		orderGroup.GET("/buy", middleware.RequireAuth, handlers.GetBuyOrdersByUID)                                         // ควบรวม
 		orderGroup.GET("/buys", middleware.RequireAuth, handlers.GetBuyOrders)                                             // ควบรวม
 		orderGroup.GET("/buys/:pid", middleware.RequireAuth, handlers.GetBuyOrdersByPID)                                   // ควบรวม
+		orderGroup.GET("/:type/:id", middleware.RequireAuth, handlers.DeleteOrder)                                         // ควบรวม
 		orderGroup.GET("/matched-order", middleware.RequireAuth, handlers.GetMatchedOrder)                                 // ควบรวม
 		orderGroup.PUT("/matched-order/status", middleware.RequireAuth, handlers.UpdataMatchedOrderStatus)                 // ควบรวม
 		orderGroup.PUT("/matched-order/received", middleware.RequireAuth, handlers.UpdataMatchedOrderRecived)              // ควบรวม
 		orderGroup.PUT("/matched-order/tracking-number", middleware.RequireAuth, handlers.UpdataMatchedOrderTackingNumber) // ควบรวม
+		orderGroup.PUT("/matched-order/payment-status", middleware.RequireAuth, handlers.UpdataPaymentStatus)              // ควบรวม
 	}
 	specsGroup := router.Group("/specs")
 	{

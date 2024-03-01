@@ -27,4 +27,5 @@ type MatchedOrder struct {
 	DesAdd          string             `bson:"desAdd"`
 	DesPhone        string             `bson:"desPhone"`
 	Tracking_Number string             `bson:"tracking_Number"`
+	PaymentStatus   string             `bson:"paymentStatus"`
 }

@@ -583,6 +583,7 @@ func UpdateProduct(c *gin.Context) {
 
 		product.Image = "https://firebasestorage.googleapis.com/v0/b/ezcom-eaa21.appspot.com/o/" + imagePath + "?alt=media"
 		fmt.Print("product image : ", product.Image)
+		product.CreatedAt = foundProduct.CreatedAt
 	} else {
 		foundProduct, err := models.GetProductByIdD(productID)
 		if err != nil {
@@ -590,8 +591,8 @@ func UpdateProduct(c *gin.Context) {
 			return
 		}
 		product.Image = foundProduct.Image
+		product.CreatedAt = foundProduct.CreatedAt
 	}
-	product.CreatedAt = foundProduct.CreatedAt
 
 	if err := c.Bind(&product); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "shouldbind error"})

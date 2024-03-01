@@ -94,6 +94,7 @@ func CreateSellOrder(c *gin.Context) {
 		matchedOrder.DesAdd = buyOrder.DesAdd
 		matchedOrder.DesPhone = buyOrder.DesPhone
 		matchedOrder.CreatedAt = time.Now()
+		matchedOrder.PaymentStatus = "No"
 		collection = db.GetMatchOrder_Collection()
 		result, err := collection.InsertOne(context.Background(), matchedOrder)
 		if err != nil {
@@ -222,6 +223,7 @@ func CreateBuyOrder(c *gin.Context) {
 		matchedOrder.DesAdd = userObj.Address
 		matchedOrder.DesPhone = userObj.PhoneNumber
 		matchedOrder.CreatedAt = time.Now()
+		matchedOrder.PaymentStatus = "No"
 		collection = db.GetMatchOrder_Collection()
 		result, err := collection.InsertOne(context.Background(), matchedOrder)
 		if err != nil {
@@ -608,7 +610,6 @@ func UpdataMatchedOrderRecived(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusCreated, result.UpsertedID)
-
 }
 
 func UpdataMatchedOrderTackingNumber(c *gin.Context) {
@@ -643,5 +644,59 @@ func UpdataMatchedOrderTackingNumber(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusCreated, result.UpsertedID)
+}
+
+func UpdataPaymentStatus(c *gin.Context) {
+	// get user from body
+	var body struct {
+		OrderID string `json:"orderID"`
+	}
+	if err := c.BindJSON(&body); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "what the fuck"})
+		return
+	}
+
+	objID, err := primitive.ObjectIDFromHex(body.OrderID)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid product ID"})
+		return
+	}
+
+	collection := db.GetMatchOrder_Collection()
+
+	update := bson.M{
+		"$set": bson.M{
+			"paymentStatus": "yes",
+		},
+	}
+
+	result, err := collection.UpdateOne(context.Background(), bson.M{"_id": objID}, update)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update paymentStatus"})
+		return
+	}
+	c.JSON(http.StatusCreated, result.UpsertedID)
+}
+
+func DeleteOrder(c *gin.Context) {
+	orderType := c.Param("type")
+	orderID := c.Param("id")
+	if orderType == "buy" {
+		collection := db.GetBuyOrder_Collection()
+		result, err := collection.DeleteOne(context.Background(), bson.M{"_id": orderID})
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete buy order"})
+			return
+		}
+		c.JSON(http.StatusCreated, result.DeletedCount)
+	} else if orderType == "sell" {
+		collection := db.GetSellOrder_Collection()
+		result, err := collection.DeleteOne(context.Background(), bson.M{"_id": orderID})
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete sell order"})
+			return
+		}
+		c.JSON(http.StatusOK, result.DeletedCount)
+	}
 
 }
