@@ -610,6 +610,8 @@ func UpdateProduct(c *gin.Context) {
 	}
 	if product.Type == "mouse" {
 		var specs models.MouseSpecs
+		specs.Type = c.PostForm("type")
+		specs.PID = c.PostForm("pID")
 		specs.Sensor = c.PostForm("sensor")
 		specs.ButtonSwitch = c.PostForm("buttonSwitch")
 		specs.Connection = c.PostForm("connection")
@@ -638,6 +640,8 @@ func UpdateProduct(c *gin.Context) {
 		c.JSON(http.StatusCreated, result.UpsertedID)
 	} else if product.Type == "keyboard" {
 		var specs models.KeyBoardSpecs
+		specs.Type = c.PostForm("type")
+		specs.PID = c.PostForm("pID")
 		specs.Form_Factor = c.PostForm("form_factor")
 		specs.PCB = c.PostForm("PCB")
 		specs.RGB = c.PostForm("RGB")
@@ -664,6 +668,8 @@ func UpdateProduct(c *gin.Context) {
 		c.JSON(http.StatusCreated, result.UpsertedID)
 	} else if product.Type == "headset" {
 		var specs models.HeadsetSpecs
+		specs.Type = c.PostForm("type")
+		specs.PID = c.PostForm("pID")
 		specs.Headset_Type = c.PostForm("headset_type")
 		specs.Cable_Length = c.PostForm("cable_length")
 		specs.Connection = c.PostForm("connection")
@@ -688,6 +694,8 @@ func UpdateProduct(c *gin.Context) {
 		c.JSON(http.StatusCreated, result.UpsertedID)
 	} else if product.Type == "mousePad" {
 		var specs models.MousePad
+		specs.Type = c.PostForm("type")
+		specs.PID = c.PostForm("pID")
 		specs.Height = c.PostForm("height")
 		specs.Thickness = c.PostForm("thickness")
 		specs.Material = c.PostForm("material")
@@ -711,6 +719,8 @@ func UpdateProduct(c *gin.Context) {
 		c.JSON(http.StatusCreated, result.UpsertedID)
 	} else if product.Type == "GPU" {
 		var specs models.GPU
+		specs.Type = c.PostForm("type")
+		specs.PID = c.PostForm("pID")
 		specs.NVIDIA_CUDA_Cores = c.PostForm("nvidia_cuda_cores")
 		specs.Memory_Size = c.PostForm("memory_size")
 		specs.Boost_Clock = c.PostForm("boost_clock")
@@ -732,6 +742,8 @@ func UpdateProduct(c *gin.Context) {
 		c.JSON(http.StatusCreated, result.UpsertedID)
 	} else if product.Type == "CPU" {
 		var specs models.CPU
+		specs.Type = c.PostForm("type")
+		specs.PID = c.PostForm("pID")
 		specs.Socket = c.PostForm("socket")
 		specs.Threads = c.PostForm("threads")
 		specs.Core_Speed_Base = c.PostForm("core_speed_base")
@@ -755,6 +767,8 @@ func UpdateProduct(c *gin.Context) {
 		c.JSON(http.StatusCreated, result.UpsertedID)
 	} else if product.Type == "monitor" {
 		var specs models.Monitor
+		specs.Type = c.PostForm("type")
+		specs.PID = c.PostForm("pID")
 		specs.Size = c.PostForm("size")
 		specs.Aspect_Ratio = c.PostForm("aspect_ratio")
 		specs.G_Sync = c.PostForm("g_sync")

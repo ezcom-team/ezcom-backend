@@ -681,9 +681,14 @@ func UpdataPaymentStatus(c *gin.Context) {
 func DeleteOrder(c *gin.Context) {
 	orderType := c.Param("type")
 	orderID := c.Param("id")
+	objID, err := primitive.ObjectIDFromHex(orderID)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid product ID"})
+		return
+	}
 	if orderType == "buy" {
 		collection := db.GetBuyOrder_Collection()
-		result, err := collection.DeleteOne(context.Background(), bson.M{"_id": orderID})
+		result, err := collection.DeleteOne(context.Background(), bson.M{"_id": objID})
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete buy order"})
 			return
@@ -691,7 +696,7 @@ func DeleteOrder(c *gin.Context) {
 		c.JSON(http.StatusCreated, result.DeletedCount)
 	} else if orderType == "sell" {
 		collection := db.GetSellOrder_Collection()
-		result, err := collection.DeleteOne(context.Background(), bson.M{"_id": orderID})
+		result, err := collection.DeleteOne(context.Background(), bson.M{"_id": objID})
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete sell order"})
 			return
