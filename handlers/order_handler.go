@@ -705,3 +705,35 @@ func DeleteOrder(c *gin.Context) {
 	}
 
 }
+
+func GetMatchedOrderByPID(c *gin.Context) {
+	//ดึงค่า user จากใน context
+	productID := c.Param("pid")
+
+	filter := bson.M{"product_id": productID}
+
+	// MongoDB query to find users by uid and type
+	collection := db.GetMatchOrder_Collection()
+	cursor, err := collection.Find(context.TODO(), filter)
+	if err != nil {
+		log.Fatal(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Internal Server Error"})
+		return
+	}
+	defer cursor.Close(context.TODO())
+
+	// Iterate through the results and decode them into the users slice
+	var matchedOrders []models.MatchedOrder
+	for cursor.Next(context.TODO()) {
+		var matchedOrder models.MatchedOrder
+		if err := cursor.Decode(&matchedOrder); err != nil {
+			log.Fatal(err)
+			c.JSON(http.StatusInternalServerError, gin.H{"message": "Internal Server Error 7777"})
+			return
+		}
+		matchedOrders = append(matchedOrders, matchedOrder)
+	}
+
+	// Return filtered users as JSON
+	c.JSON(http.StatusOK, matchedOrders)
+}

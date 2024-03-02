@@ -50,6 +50,7 @@ func Setup(router *gin.Engine) {
 		orderGroup.GET("/buys/:pid", middleware.RequireAuth, handlers.GetBuyOrdersByPID)                                   // ควบรวม
 		orderGroup.GET("/:type/:id", middleware.RequireAuth, handlers.DeleteOrder)                                         // ควบรวม
 		orderGroup.GET("/matched-order", middleware.RequireAuth, handlers.GetMatchedOrder)                                 // ควบรวม
+		orderGroup.GET("/matched-order/:pid", middleware.RequireAuth, handlers.GetMatchedOrderByPID)                       // ควบรวม
 		orderGroup.PUT("/matched-order/status", middleware.RequireAuth, handlers.UpdataMatchedOrderStatus)                 // ควบรวม
 		orderGroup.PUT("/matched-order/received", middleware.RequireAuth, handlers.UpdataMatchedOrderRecived)              // ควบรวม
 		orderGroup.PUT("/matched-order/tracking-number", middleware.RequireAuth, handlers.UpdataMatchedOrderTackingNumber) // ควบรวม
