@@ -299,6 +299,7 @@ func UpdateUser(c *gin.Context) {
 		updataImage = false
 	}
 	foundUser, err := models.GetUserByIdD(uid)
+	user.CreatedAt = foundUser.CreatedAt
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err})
 		return
