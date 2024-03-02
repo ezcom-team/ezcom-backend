@@ -21,4 +21,5 @@ type BuyOrder struct {
 	Verify       string             `bson:"verify"`
 	DesAdd       string             `bson:"desAdd"`
 	DesPhone     string             `bson:"desPhone"`
+	CreditCard   string             `bson:"creditCard"`
 }
