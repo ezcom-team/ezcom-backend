@@ -839,7 +839,7 @@ func DeleteProduct(c *gin.Context) {
 		// ลบไฟล์
 		err = client.Bucket(bucketName).Object(fileName).Delete(ctx)
 		if err != nil {
-			log.Fatalf("Failed to delete object: %v", err)
+			fmt.Print("no fileName in store")
 		}
 
 		fmt.Println("Object deleted successfully")
