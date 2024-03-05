@@ -100,13 +100,11 @@ func CreateSellOrder(c *gin.Context) {
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err})
 		} else {
-			c.JSON(http.StatusOK, matchedOrder)
+			c.JSON(http.StatusCreated, gin.H{
+				"result": result.InsertedID,
+				"type":   "matchedOrder",
+			})
 		}
-		c.JSON(http.StatusCreated, gin.H{
-			"result": result.InsertedID,
-			"type":   "matchedOrder",
-		})
-
 		//delete buyorder
 		var collection = db.GetBuyOrder_Collection()
 		_, err = collection.DeleteOne(context.Background(), bson.M{"_id": buyOrder.ID})
@@ -228,11 +226,13 @@ func CreateBuyOrder(c *gin.Context) {
 		result, err := collection.InsertOne(context.Background(), matchedOrder)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		}else {
+			c.JSON(http.StatusCreated, gin.H{
+				"result": result.InsertedID,
+				"type":   "matchedOrder",
+			})
 		}
-		c.JSON(http.StatusCreated, gin.H{
-			"result": result.InsertedID,
-			"type":   "matchedOrder",
-		})
+		
 
 		//delete sellOrder
 		var collection = db.GetSellOrder_Collection()

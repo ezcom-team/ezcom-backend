@@ -40,21 +40,21 @@ func Setup(router *gin.Engine) {
 	orderGroup := router.Group("/order")
 	{
 		orderGroup.POST("/sell", middleware.RequireAuth, handlers.CreateSellOrder)
-		orderGroup.GET("/sell", middleware.RequireAuth, handlers.GetSellOrdersByUID)       // ควบรวม
-		orderGroup.GET("/sells", middleware.RequireAuth, handlers.GetSellOrders)           // ควบรวม
-		orderGroup.GET("/sells/:pid", middleware.RequireAuth, handlers.GetSellOrdersByPID) // ควบรวม
-		orderGroup.DELETE("/:type/:id", middleware.RequireAuth, handlers.DeleteOrder)      // ควบรวม
+		orderGroup.GET("/sell", middleware.RequireAuth, handlers.GetSellOrdersByUID)       
+		orderGroup.GET("/sells", middleware.RequireAuth, handlers.GetSellOrders)           
+		orderGroup.GET("/sells/:pid", middleware.RequireAuth, handlers.GetSellOrdersByPID) 
+		orderGroup.DELETE("/:type/:id", middleware.RequireAuth, handlers.DeleteOrder)      
 		orderGroup.POST("/buy", middleware.RequireAuth, handlers.CreateBuyOrder)
-		orderGroup.GET("/buy", middleware.RequireAuth, handlers.GetBuyOrdersByUID)                                         // ควบรวม
-		orderGroup.GET("/buys", middleware.RequireAuth, handlers.GetBuyOrders)                                             // ควบรวม
-		orderGroup.GET("/buys/:pid", middleware.RequireAuth, handlers.GetBuyOrdersByPID)                                   // ควบรวม
-		orderGroup.GET("/:type/:id", middleware.RequireAuth, handlers.DeleteOrder)                                         // ควบรวม
-		orderGroup.GET("/matched-order", middleware.RequireAuth, handlers.GetMatchedOrder)                                 // ควบรวม
-		orderGroup.GET("/matched-order/:pid", middleware.RequireAuth, handlers.GetMatchedOrderByPID)                       // ควบรวม
-		orderGroup.PUT("/matched-order/status", middleware.RequireAuth, handlers.UpdataMatchedOrderStatus)                 // ควบรวม
-		orderGroup.PUT("/matched-order/received", middleware.RequireAuth, handlers.UpdataMatchedOrderRecived)              // ควบรวม
-		orderGroup.PUT("/matched-order/tracking-number", middleware.RequireAuth, handlers.UpdataMatchedOrderTackingNumber) // ควบรวม
-		orderGroup.PUT("/matched-order/payment-status", middleware.RequireAuth, handlers.UpdataPaymentStatus)              // ควบรวม
+		orderGroup.GET("/buy", middleware.RequireAuth, handlers.GetBuyOrdersByUID)                                         
+		orderGroup.GET("/buys", middleware.RequireAuth, handlers.GetBuyOrders)                                            
+		orderGroup.GET("/buys/:pid", middleware.RequireAuth, handlers.GetBuyOrdersByPID)                                  
+		orderGroup.GET("/:type/:id", middleware.RequireAuth, handlers.DeleteOrder)                                        
+		orderGroup.GET("/matched-order", middleware.RequireAuth, handlers.GetMatchedOrder)                                 
+		orderGroup.GET("/matched-order/:pid", middleware.RequireAuth, handlers.GetMatchedOrderByPID)                       
+		orderGroup.PUT("/matched-order/status", middleware.RequireAuth, handlers.UpdataMatchedOrderStatus)                 
+		orderGroup.PUT("/matched-order/received", middleware.RequireAuth, handlers.UpdataMatchedOrderRecived)              
+		orderGroup.PUT("/matched-order/tracking-number", middleware.RequireAuth, handlers.UpdataMatchedOrderTackingNumber) 
+		orderGroup.PUT("/matched-order/payment-status", middleware.RequireAuth, handlers.UpdataPaymentStatus)
 	}
 	specsGroup := router.Group("/specs")
 	{
